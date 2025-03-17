@@ -1,0 +1,709 @@
+openapi: 3.0.0
+info:
+  title: Car Meets and Races API
+  description: API for managing users, cars, car meets, races, and crews.
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: Main API server
+
+tags:
+  - name: Auth
+    description: Authentication-related endpoints
+  - name: Users
+    description: User management endpoints
+  - name: Cars
+    description: Car management endpoints
+  - name: Meets
+    description: Car meet management endpoints
+  - name: Races
+    description: Race management endpoints
+  - name: Crews
+    description: Crew management endpoints
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: user@example.com
+        nickname:
+          type: string
+          example: Speedster99
+        description:
+          type: string
+          example: Car enthusiast
+        imageLocation:
+          type: string
+          example: /uploads/avatar1.png
+
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+        userId:
+          type: integer
+          example: 1
+        brand:
+          type: string
+          example: Nissan
+        model:
+          type: string
+          example: GT-R
+        engine:
+          type: string
+          example: 3.8L V6
+        horsePower:
+          type: integer
+          example: 565
+        description:
+          type: string
+          example: Modified for track racing
+
+    Meet:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 201
+        creatorId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Supercar Sunday
+        description:
+          type: string
+          example: Biggest car meet in the city
+        location:
+          type: string
+          example: Downtown Parking Lot
+        coordinates:
+          type: string
+          example: "40.7128,-74.0060"
+        crewId:
+          type: integer
+          example: 3
+        private:
+          type: boolean
+          example: false
+        date:
+          type: string
+          format: date-time
+          example: "2024-06-20T15:00:00Z"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["Cars N Coffee", "Tour"]
+
+    Race:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 301
+        creatorId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Night Drag Race
+        raceType:
+          type: string
+          example: drag
+        location:
+          type: string
+          example: Airport Strip
+        coordinates:
+          type: string
+          example: "40.7128,-74.0060"
+        crewId:
+          type: integer
+          example: 3
+        private:
+          type: boolean
+          example: false
+
+    Crew:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 401
+        name:
+          type: string
+          example: Street Kings
+        description:
+          type: string
+          example: Elite racers of NYC
+        imageLocation:
+          type: string
+          example: /uploads/crew1.png
+
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Operation successful
+
+paths:
+  # Auth Controller
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                nickname:
+                  type: string
+                  example: Speedster99
+                password:
+                  type: string
+                  example: SecurePass123
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: SecurePass123
+      responses:
+        '200':
+          description: Login successful, returns user ID and nickname with JWT cookie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  nickname:
+                    type: string
+                    example: Speedster99
+
+  # Users Controller
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+    put:
+      tags:
+        - Users
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                description:
+                  type: string
+                imageLocation:
+                  type: string
+      responses:
+        '200':
+          description: User profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all user profiles
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /users/{id}/events:
+    get:
+      tags:
+        - Users
+      summary: Get all meets a user applied to
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of meets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meet'
+
+  # Cars Controller
+  /cars:
+    post:
+      tags:
+        - Cars
+      summary: Add a new car
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Car'
+      responses:
+        '200':
+          description: Car added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  message:
+                    type: string
+                    example: Car added successfully
+
+  /users/{id}/cars:
+    get:
+      tags:
+        - Cars
+      summary: Get cars of a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of user's cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+
+  # Meets Controller
+  /meets:
+    post:
+      tags:
+        - Meets
+      summary: Create a new meet
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Meet'
+      responses:
+        '200':
+          description: Meet created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: Meet created successfully
+
+    get:
+      tags:
+        - Meets
+      summary: Get all meets with filters
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: location
+          in: query
+          schema:
+            type: string
+            example: NYC
+        - name: tag
+          in: query
+          schema:
+            type: string
+            example: supercars
+      responses:
+        '200':
+          description: List of meets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meet'
+
+  /meets/{id}:
+    get:
+      tags:
+        - Meets
+      summary: Get a specific meet
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Meet details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meet'
+
+  /meets/{id}/join:
+    post:
+      tags:
+        - Meets
+      summary: Join a meet
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Joined meet successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  # Races Controller
+  /races:
+    post:
+      tags:
+        - Races
+      summary: Create a new race
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Race'
+      responses:
+        '200':
+          description: Race created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 301
+                  message:
+                    type: string
+                    example: Race created successfully
+
+    get:
+      tags:
+        - Races
+      summary: Get all races with filters
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: location
+          in: query
+          schema:
+            type: string
+            example: NYC
+        - name: raceType
+          in: query
+          schema:
+            type: string
+            example: drag
+      responses:
+        '200':
+          description: List of races
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Race'
+
+  /races/{id}:
+    get:
+      tags:
+        - Races
+      summary: Get a specific race
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Race details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Race'
+
+    put:
+      tags:
+        - Races
+      summary: Update a race
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Race'
+      responses:
+        '200':
+          description: Race updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /races/{id}/join:
+    post:
+      tags:
+        - Races
+      summary: Join a race
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Joined race successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  # Crews Controller
+  /crews:
+    post:
+      tags:
+        - Crews
+      summary: Create a new crew
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Crew'
+      responses:
+        '200':
+          description: Crew created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: Crew created successfully
+
+  /crews/{id}:
+    put:
+      tags:
+        - Crews
+      summary: Update a crew
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Crew'
+      responses:
+        '200':
+          description: Crew updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  /crews/{id}/add:
+    post:
+      tags:
+        - Crews
+      summary: Add user to a crew
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 2
+                rank:
+                  type: string
+                  example: recruiter
+      responses:
+        '200':
+          description: User added to crew successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+security:
+  - bearerAuth: []
