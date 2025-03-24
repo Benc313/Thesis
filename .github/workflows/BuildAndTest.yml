@@ -49,18 +49,9 @@ jobs:
       - name: Update EF Core Tools
         run: dotnet tool update --global dotnet-ef
 
-      - name: Install EF Core Design
-        run: dotnet add ThesisBackend package Microsoft.EntityFrameworkCore.Design
-
       - name: Build project
         run: dotnet build --configuration Release --no-restore
         working-directory: ./ThesisBackend  # Path to your project folder
 
       - name: Verify dotnet-ef installation
         run: dotnet ef --version  # Should print the EF Core version if installed correctly
-
-      - name: Run EF migrations
-        env:
-          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=thesisdb;Username=testuser;Password=testpassword"
-        run: dotnet ef database update
-        working-directory: ./ThesisBackend  # Path to your project folder
