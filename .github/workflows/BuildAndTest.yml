@@ -34,6 +34,14 @@ jobs:
         with:
           dotnet-version: '9.0.x'  # Adjust to your .NET version (e.g., 6.0.x, 7.0.x)
 
+      - name: Install dotnet-ef tool
+        run: dotnet tool install --global dotnet-ef --version 9.0.0  # Match your EF Core version
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1  # Optional: Disable telemetry for cleaner logs
+
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH  # Ensures dotnet-ef is available in the PATH
+
       - name: Install dependencies
         run: dotnet restore
         working-directory: ./ThesisBackend  # Path to your project folder
@@ -41,6 +49,9 @@ jobs:
       - name: Build project
         run: dotnet build --configuration Release --no-restore
         working-directory: ./ThesisBackend  # Path to your project folder
+
+      - name: Verify dotnet-ef installation
+        run: dotnet ef --version  # Should print the EF Core version if installed correctly
 
       - name: Run EF migrations
         env:
