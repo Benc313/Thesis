@@ -46,6 +46,9 @@ jobs:
         run: dotnet restore
         working-directory: ./ThesisBackend  # Path to your project folder
 
+      - name: Update EF Core Tools
+        run: dotnet tool update --global dotnet-ef
+
       - name: Install EF Core Design
         run: dotnet add ThesisBackend package Microsoft.EntityFrameworkCore.Design
 
