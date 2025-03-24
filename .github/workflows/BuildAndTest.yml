@@ -1,0 +1,49 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches:
+      - main  # Replace with your default branch name (e.g., master)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: thesisdb
+        ports:
+          - 5432:5432  # Maps port 5432 on the container to 5432 on the host
+        # Ensure PostgreSQL is ready before proceeding
+        options: >-
+          --health-cmd "pg_isready -U testuser"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'  # Adjust to your .NET version (e.g., 6.0.x, 7.0.x)
+
+      - name: Install dependencies
+        run: dotnet restore
+        working-directory: ./ThesisBackend  # Path to your project folder
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./ThesisBackend  # Path to your project folder
+
+      - name: Run EF migrations
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=thesisdb;Username=testuser;Password=testpassword"
+        run: dotnet ef database update
+        working-directory: ./ThesisBackend  # Path to your project folder
