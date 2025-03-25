@@ -7,14 +7,19 @@ public class UserCrew
 {
 	[Key]
 	public int Id { get; set; }
-
+	
+	[Required]
 	public int CrewId { get; set; }
-	[ForeignKey("CrewId")]
+	
 	public Crew Crew { get; set; }
-
+	
+	[Required]
 	public int UserId { get; set; }
+	
 	[ForeignKey("UserId")]
 	public User User { get; set; }
+	
+	[Required]
 
 	public Rank Rank { get; set; }
 }
