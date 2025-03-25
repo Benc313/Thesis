@@ -7,9 +7,8 @@ public class Car
 {
 	[Key]
 	public int Id { get; set; }
-
+	[Required]
 	public int UserId { get; set; }
-	[ForeignKey("UserId")]
 	public User User { get; set; }
 
 	[Required]
@@ -20,11 +19,10 @@ public class Car
 	[StringLength(32)]
 	public string Model { get; set; }
 
-	[StringLength(256)]
 	public string Description { get; set; }
-
+	[Required]
 	[StringLength(32)]
 	public string Engine { get; set; }
-
+	[Required]
 	public int HorsePower { get; set; }
 }

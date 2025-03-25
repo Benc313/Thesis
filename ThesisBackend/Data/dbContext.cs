@@ -78,5 +78,15 @@ public class dbContext : DbContext
             .WithMany(c => c.Meets)
             .HasForeignKey(m => m.CrewId)
             .OnDelete(DeleteBehavior.SetNull);
+        
+        modelBuilder.Entity<Race>()
+            .HasOne(r => r.Creator)
+            .WithMany(u => u.CreatedRaces)
+            .HasForeignKey(r => r.CreatorId);
+
+        modelBuilder.Entity<Meet>()
+            .HasOne(m => m.Creator)
+            .WithMany(u => u.CreatedMeets)
+            .HasForeignKey(m => m.CreatorId);
     }
 }

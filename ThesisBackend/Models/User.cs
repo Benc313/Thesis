@@ -29,4 +29,6 @@ public class User
 	public List<UserCrew> UserCrews { get; set; } = new List<UserCrew>();
 	public List<Race> Races { get; set; } = new List<Race>(); // Many-to-many with Race
 	public List<Meet> Meets { get; set; } = new List<Meet>(); // Many-to-many with Meet
+	public List<Race> CreatedRaces { get; set; } = new List<Race>(); // Races created by this user
+	public List<Meet> CreatedMeets { get; set; } = new List<Meet>(); // Meets created by this user
 }
