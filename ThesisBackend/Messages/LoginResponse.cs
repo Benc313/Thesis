@@ -1,7 +1,15 @@
+using ThesisBackend.Models;
+
 namespace ThesisBackend.Messages;
 
 public class LoginResponse
 {
-	public int id { get; set; }
-	public string nickname { get; set; }
+	public int Id { get; set; }
+	public string Nickname { get; set; }
+	
+	public LoginResponse(User user)
+	{
+		Id = user.Id;
+		Nickname = user.Nickname;
+	}
 }
