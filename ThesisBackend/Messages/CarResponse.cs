@@ -5,7 +5,7 @@ namespace ThesisBackend.Messages;
 public class CarResponse
 {
 	public int Id { get; set; }
-	public User User { get; set; }
+	public int UserId { get; set; }
 	public string Brand { get; set; }
 	public string Model { get; set; }
 	public string Description { get; set; }
@@ -15,7 +15,7 @@ public class CarResponse
 	public CarResponse(Car car)
 	{
 		Id = car.Id;
-		User = car.User;
+		UserId = car.UserId;
 		Brand = car.Brand;
 		Model = car.Model;
 		Description = car.Description;
