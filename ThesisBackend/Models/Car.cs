@@ -41,4 +41,13 @@ public class Car
 		Engine = carRequest.Engine;
 		HorsePower = carRequest.HorsePower;
 	}
+	
+	public void updateCar(CarRequest carRequest)
+    {
+        Brand = carRequest.Brand;
+        Model = carRequest.Model;
+        Description = carRequest.Description;
+        Engine = carRequest.Engine;
+        HorsePower = carRequest.HorsePower;
+    }
 }
