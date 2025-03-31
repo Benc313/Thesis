@@ -6,7 +6,7 @@ using ThesisBackend.Models;
 
 namespace ThesisBackend.Controllers;
 
-[Route("api/v1/User")]
+[Route("api/v1/Meet")]
 [ApiController]
 public class MeetController : ControllerBase
 {
