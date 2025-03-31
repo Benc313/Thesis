@@ -30,10 +30,10 @@ public class CarController : ControllerBase
 		{
 			return NotFound(new { message = "User not found" });
 		}
-		_context.Cars.Add(new Car(carRequest, user));
+		var newCar = new Car(carRequest, user);
+		_context.Cars.Add(newCar);
 		await _context.SaveChangesAsync();
-		var car = await _context.Cars.OrderBy(c => c.Id).LastOrDefaultAsync(c => c.Brand == carRequest.Brand && c.Model == carRequest.Model);
-		return Ok(new CarResponse(car));
+		return Ok(new CarResponse(newCar));
 	}
 	
     //[Authorize]	//Uncomment this line to enable authorization
