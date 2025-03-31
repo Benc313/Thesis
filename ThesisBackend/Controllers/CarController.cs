@@ -9,7 +9,7 @@ using ThesisBackend.Models;
 
 namespace ThesisBackend.Controllers;
 
-[Route("api/v1/Authentication")]
+[Route("api/v1/cars")]
 [ApiController]
 public class CarController : ControllerBase
 {
@@ -46,7 +46,7 @@ public class CarController : ControllerBase
 	    {
     		return NotFound(new { message = "Car not found" });
 	    }
-	    car.updateCar(carRequest);
+	    car.UpdateCar(carRequest);
 	    await _context.SaveChangesAsync();
 	    return Ok(new CarResponse(car));
 	}
