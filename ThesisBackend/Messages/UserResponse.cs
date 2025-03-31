@@ -1,3 +1,5 @@
+using ThesisBackend.Models;
+
 namespace ThesisBackend.Messages;
 
 public class UserResponse
@@ -7,4 +9,13 @@ public class UserResponse
 	public string Nickname { get; set; }
 	public string Description { get; set; } = "No description provided";
 	public string ImageLocation { get; set; } = "default.jpg";
+	
+	public UserResponse(User user)
+	{
+		Id = user.Id.ToString();
+		Email = user.Email;
+		Nickname = user.Nickname;
+		Description = user.Description;
+		ImageLocation = user.ImageLocation;
+	}
 }
