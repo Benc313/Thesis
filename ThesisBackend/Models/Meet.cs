@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ThesisBackend.Messages;
 
 namespace ThesisBackend.Models;
 
@@ -37,4 +38,39 @@ public class Meet
 	public List<MeetTags> Tags { get; set; } = new List<MeetTags>();
 
 	public List<User> Users { get; set; } = new List<User>(); // Many-to-many with User
+	
+	[NotMapped]
+	public double Latitude => double.Parse(Coordinates.Split(',')[0]);
+	[NotMapped]
+	public double Longitude => double.Parse(Coordinates.Split(',')[1]);
+	
+	public Meet() { }
+	
+	public Meet(MeetRequest meetRequest, User user, Crew crew)
+	{
+		Name = meetRequest.Name;
+		Description = meetRequest.Description;
+		CreatorId = user.Id;
+		Creator = user;
+		CrewId = meetRequest.CrewId;
+		Crew = crew;
+		Location = meetRequest.Location;
+		Coordinates = meetRequest.Coordinates;
+		Date = meetRequest.Date;
+		Private = meetRequest.Private;
+		Tags = meetRequest.Tags;
+	}
+	
+	public void UpdateMeet(MeetRequest meetRequest, Crew crew)
+	{
+		Name = meetRequest.Name;
+		Description = meetRequest.Description;
+		CrewId = meetRequest.CrewId;
+		Crew = crew;
+		Location = meetRequest.Location;
+		Coordinates = meetRequest.Coordinates;
+		Date = meetRequest.Date;
+		Private = meetRequest.Private;
+		Tags = meetRequest.Tags;
+	}
 }
