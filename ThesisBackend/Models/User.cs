@@ -41,4 +41,12 @@ public class User
 		Email = registrationRequest.Email;
 		PasswordHash = BCrypt.Net.BCrypt.HashPassword(registrationRequest.Password);
 	}
+	
+	public void UpdateUser(UserRequest userRequest)
+	{
+		Email = userRequest.Email;
+		Nickname = userRequest.Nickname;
+		Description = userRequest.Description;
+		ImageLocation = userRequest.ImageLocation;
+	}
 }
