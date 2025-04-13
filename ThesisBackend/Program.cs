@@ -11,7 +11,16 @@ builder.Services.AddControllers(); // Add controllers for handling HTTP requests
 builder.Services.AddOpenApi(); // Add OpenAPI/Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // Angular dev server
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); // If needed
+    });
+});
 // Configure the database context with PostgreSQL
 builder.Services.AddDbContext<dbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -45,7 +54,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 var app = builder.Build();
-
+app.UseCors("AllowAngularApp");
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<dbContext>();
