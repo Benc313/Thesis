@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api/v1/Authentication'; // Replace with your backend URL
+  private apiUrl = 'http://localhost:5123/api/v1/Authentication'; // Replace with your backend URL
   private token: string | null = null;
 
   constructor(private http: HttpClient) {}

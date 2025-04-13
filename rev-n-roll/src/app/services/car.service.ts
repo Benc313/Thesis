@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class CarService {
-  private apiUrl = 'http://localhost:5000/api/v1/cars'; // Replace with your backend URL
+  private apiUrl = 'http://localhost:5123/api/v1/cars'; // Replace with your backend URL
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
