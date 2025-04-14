@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AddCarDialogComponent } from '../add-car-dialog-component/add-car-dialog-component.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -39,8 +40,19 @@ export class ProfileComponent implements OnInit {
   }
 
   onEditProfile(): void {
-    // Logic to edit the profile
-    console.log('Edit Profile button clicked');
+    if (!this.user) return;
+
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+        width: '500px',
+        panelClass: 'custom-dialog-container',
+        data: this.user, // Pass the current user data to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((updatedUser: User | undefined) => {
+        if (updatedUser) {
+            this.user = updatedUser; // Update the user with the new data
+        }
+    });
   }
   
   loadCars() {
