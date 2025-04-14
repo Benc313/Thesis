@@ -1,0 +1,15 @@
+.car-card {
+    color: inherit !important; /* Prevent car-card from forcing white on children */
+}
+
+mat-card button.text-red-400 mat-icon {
+    color: #f87171 !important; /* Tailwind's red-400 */
+    font-size: 24px !important;
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+}
+
+mat-card button.text-red-400:hover mat-icon {
+    color: #dc2626 !important; /* Tailwind's red-600 */
+}

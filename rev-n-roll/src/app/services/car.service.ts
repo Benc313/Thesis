@@ -19,18 +19,18 @@ export class CarService {
   }
 
   addCar(userId: number, car: CarRequest): Observable<Car> {
-    return this.http.post<Car>(`${this.apiUrl}/addCar/${userId}`, car, { headers: this.getHeaders() });
+    return this.http.post<Car>(`${this.apiUrl}/addCar/${userId}`, car, {withCredentials:true, headers: this.getHeaders() });
   }
 
   updateCar(carId: number, car: CarRequest): Observable<Car> {
-    return this.http.post<Car>(`${this.apiUrl}/updateCar/${carId}`, car, { headers: this.getHeaders() });
+    return this.http.post<Car>(`${this.apiUrl}/updateCar/${carId}`, car, {withCredentials:true, headers: this.getHeaders() });
   }
 
   getCars(userId: number): Observable<Car[]> {
-    return this.http.get<Car[]>(`${this.apiUrl}/getCars/${userId}`, { headers: this.getHeaders() });
+    return this.http.get<Car[]>(`${this.apiUrl}/getCars/${userId}`, {withCredentials:true, headers: this.getHeaders() });
   }
 
   deleteCar(carId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteCar/${carId}`, { headers: this.getHeaders() });
+    return this.http.delete<void>(`${this.apiUrl}/deleteCar/${carId}`, {withCredentials:true, headers: this.getHeaders() });
   }
 }

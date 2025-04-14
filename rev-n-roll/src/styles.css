@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
-
 /* Reset default margins and set a dark gradient background with animation */
 body {
     background: linear-gradient(45deg, #111827, #1f2937, #111827);
@@ -216,8 +215,8 @@ body {
   
   /* Specific style for h2 in the profile section */
   .profile-nickname {
-    color: #6A0DAD !important; /* Dark purple (Purple Heart) */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6) !important; /* Stronger shadow for contrast */
+    color: #6A0DAD !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6) !important;
     font-size: 1.875rem !important;
     font-weight: 700 !important;
     margin-bottom: 0.5rem !important;
@@ -225,5 +224,232 @@ body {
   }
   
   .profile-nickname:hover {
-    color: #8B5CF6 !important; /* Lighter purple (Vivid Violet) on hover */
+    color: #8B5CF6 !important;
   }
+  
+  /* Navbar styles */
+  nav {
+    background: linear-gradient(to right, #111827, #1f2937);
+    padding: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-logo {
+    color: #6A0DAD;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    transition: color 0.3s, transform 0.3s;
+  }
+  
+  .nav-logo:hover {
+    color: #8B5CF6;
+    transform: scale(1.05);
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .nav-links a, .nav-links button {
+    color: white;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  
+  .nav-links a:hover {
+    color: #818cf8; /* Indigo to match mat-card-title */
+    background-color: rgba(99, 102, 241, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .nav-links button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .nav-links button:hover {
+    color: #f59e0b; /* Amber to match mat-raised-button.mat-accent */
+    background-color: rgba(245, 158, 11, 0.1);
+    transform: translateY(-2px);
+  }
+  .nav-logo {
+    color: #6A0DAD;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    transition: color 0.3s, transform 0.3s;
+    animation: pulseLogo 2s infinite;
+  }
+  
+  @keyframes pulseLogo {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+  /* Responsive adjustments for navbar */
+  @media (max-width: 768px) {
+    .nav-links {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  
+    .nav-links a, .nav-links button {
+      padding: 0.5rem;
+      text-align: center;
+    }
+  }
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .nav-toggle {
+      display: block;
+    }
+  
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #1f2937;
+      flex-direction: column;
+      gap: 0;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+  
+    .nav-links-mobile.nav-links-open {
+      display: flex;
+    }
+  
+    .nav-links a, .nav-links button {
+      padding: 0.75rem;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  nav {
+    background: linear-gradient(to right, #111827, #1f2937);
+    padding: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-logo {
+    color: #6A0DAD;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    transition: color 0.3s, transform 0.3s;
+  }
+  
+  .nav-logo:hover {
+    color: #8B5CF6;
+    transform: scale(1.05);
+  }
+  
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .nav-links a, .nav-links button {
+    color: white;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  
+  .nav-links a:hover {
+    color: #818cf8;
+    background-color: rgba(99, 102, 241, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  .nav-links button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .nav-links button:hover {
+    color: #f59e0b;
+    background-color: rgba(245, 158, 11, 0.1);
+    transform: translateY(-2px);
+  }
+  
+  /* Mobile styles for navbar */
+  @media (max-width: 768px) {
+    .nav-toggle {
+      display: block;
+    }
+  
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #1f2937;
+      flex-direction: column;
+      gap: 0;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+  
+    .nav-links.nav-links-open {
+      display: flex;
+    }
+  
+    .nav-links a, .nav-links button {
+      padding: 0.75rem;
+      text-align: center;
+      width: 100%;
+    }
+  } 

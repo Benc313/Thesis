@@ -61,8 +61,8 @@ public class AuthController : ControllerBase
 			HttpOnly = true,
 			Secure = true,
 			SameSite = SameSiteMode.Lax,
-			Expires = DateTime.UtcNow.AddMinutes(30),
-			
+			Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+			Path = "/",
 		});
 	}
 	

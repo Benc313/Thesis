@@ -1,13 +1,16 @@
-<nav class="bg-gray-900 p-4 shadow-lg">
-  <div class="container mx-auto flex justify-between items-center">
-    <div class="text-2xl font-bold text-neon-red">Rev_n_Roll</div>
-    <div class="space-x-4">
-      <a routerLink="/home" class="text-white hover:text-neon-blue">Home</a>
-      <a routerLink="/meets" class="text-white hover:text-neon-blue">Meets</a>
-      <a routerLink="/races" class="text-white hover:text-neon-blue">Races</a>
-      <a routerLink="/crews" class="text-white hover:text-neon-blue">Crews</a>
-      <a routerLink="/profile" class="text-white hover:text-neon-blue">Profile</a>
-      <button (click)="logout()" class="text-white hover:text-neon-red">Logout</button>
+<nav>
+  <div class="nav-container">
+    <div class="nav-logo">Rev_n_Roll</div>
+    <button class="nav-toggle" (click)="toggleMenu()">
+      <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+    <div class="nav-links" [ngClass]="{'nav-links-open': menuOpen}">
+      <a routerLink="/home" (click)="closeMenu()">Home</a>
+      <a routerLink="/meets" (click)="closeMenu()">Meets</a>
+      <a routerLink="/races" (click)="closeMenu()">Races</a>
+      <a routerLink="/crews" (click)="closeMenu()">Crews</a>
+      <a routerLink="/profile" (click)="closeMenu()">Profile</a>
+      <button (click)="logout(); closeMenu()">Logout</button>
     </div>
   </div>
 </nav>

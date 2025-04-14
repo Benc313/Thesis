@@ -2,7 +2,6 @@
   <!-- Profile Section -->
   <mat-card class="mb-8">
     <div class="flex">
-      <!-- Profile Picture -->
       <div class="relative">
         <img
           [src]="user?.imageLocation || 'assets/default-profile.png'"
@@ -10,9 +9,8 @@
           class="profile-picture pulse-border"
         />
       </div>
-      <!-- Profile Info -->
       <div class="flex-1">
-        <h2 class="text-3xl font-bold mat-card-title mb-2">{{ user?.nickname || 'User' }}</h2>
+        <h2 class="profile-nickname">{{ user?.nickname || 'User' }}</h2>
         <p class="text-lg italic text-gray-300">{{ user?.description || 'No description yet.' }}</p>
         <button
           mat-raised-button
@@ -47,16 +45,25 @@
 
         <!-- Car List -->
         <div *ngFor="let car of cars" class="mb-6">
-          <mat-card class="car-card">
-            <mat-card-title>
-              {{ car.brand }} {{ car.model }}
-            </mat-card-title>
-            <mat-card-subtitle>
-              Engine: {{ car.engine }} | HP: {{ car.horsePower }}
-            </mat-card-subtitle>
-            <mat-card-content>
-              <p class="mt-2">{{ car.description || 'No description provided.' }}</p>
-            </mat-card-content>
+          <mat-card class="car-card" (click)="openEditCarDialog(car)">
+            <div class="relative">
+              <mat-card-title>
+                {{ car.brand }} {{ car.model }}
+              </mat-card-title>
+              <mat-card-subtitle>
+                Engine: {{ car.engine }} | HP: {{ car.horsePower }}
+              </mat-card-subtitle>
+              <mat-card-content>
+                <p class="mt-2">{{ car.description || 'No description provided.' }}</p>
+              </mat-card-content>
+            </div>
+            <button
+              mat-icon-button
+              class="absolute top-2 right-2 text-red-400 hover:text-red-600"
+              (click)="deleteCar(car.id, $event)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
           </mat-card>
         </div>
 
