@@ -79,10 +79,18 @@ public class MeetController : ControllerBase
 		await _context.SaveChangesAsync();
 		return Ok(new { message = "Meet deleted successfully" });
 	}
-	
-	//[Authorize]	//Uncomment this line to enable authorization
+
 	[HttpGet("getMeets")]
-	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeets([FromQuery] LocationQuery query)
+	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeets()
+	{
+		var meets = await _context.Meets
+			.ToListAsync();
+		return Ok(meets.Select(meet => new SmallEventResponse(meet)).ToList());	
+	}
+
+	//[Authorize]	//Uncomment this line to enable authorization
+	[HttpGet("getMeetsF")]
+	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeetsWithFilter([FromQuery] LocationQuery query)
 	{
 		// Input validation
 		if (query.Latitude < -90 || query.Latitude > 90 ||

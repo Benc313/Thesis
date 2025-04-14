@@ -1,3 +1,4 @@
+// profile.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
@@ -12,23 +13,38 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AddCarDialogComponent } from '../add-car-dialog-component/add-car-dialog-component.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Import MatSnackBarModule
+
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, NavBarComponent,
-    MatCardModule,MatButtonModule, MatDialogModule,
-    MatIconModule, MatButtonToggleModule, AddCarDialogComponent],
+  imports: [
+    CommonModule,
+    NavBarComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonToggleModule,
+    AddCarDialogComponent,
+    MatSnackBarModule, // Add MatSnackBarModule
+  ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
   user: User | null = null;
   cars: Car[] = [];
-  userId: number = parseInt(localStorage.getItem('id') || '0', 10); // Replace with actual user ID from auth
+  userId: number = parseInt(localStorage.getItem('id') || '0', 10);
   isLoading = false;
   errorMessage: string | null = null;
 
-  constructor(private userService: UserService, private carService: CarService, private dialog: MatDialog,) {}
+  constructor(
+    private userService: UserService,
+    private carService: CarService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar // Inject MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.userService.getUser(this.userId).subscribe(user => {
@@ -45,12 +61,18 @@ export class ProfileComponent implements OnInit {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
         width: '500px',
         panelClass: 'custom-dialog-container',
-        data: this.user, // Pass the current user data to the dialog
+        data: this.user,
     });
 
     dialogRef.afterClosed().subscribe((updatedUser: User | undefined) => {
         if (updatedUser) {
-            this.user = updatedUser; // Update the user with the new data
+            this.snackBar.open('User updated successfully!', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['success-snackbar'],
+            });
+            this.user = updatedUser;
         }
     });
   }
@@ -90,6 +112,13 @@ export class ProfileComponent implements OnInit {
         this.carService.addCar(this.userId!, result).subscribe({
           next: (newCar) => {
             this.loadCars();
+            // Add snackbar message
+            this.snackBar.open('Car added successfully!', 'Close', {
+              duration: 3000, // Duration in milliseconds (3 seconds)
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+              panelClass: ['success-snackbar'], // Optional: Custom styling
+            });
             dialogRef.componentInstance.isSubmitting = false;
           },
           error: (error) => {
@@ -111,8 +140,13 @@ export class ProfileComponent implements OnInit {
 
     this.carService.deleteCar(carId).subscribe({
       next: () => {
-        console.log('Car deleted successfully!');
-        this.loadCars(); // Reload the car list after deletion
+        this.snackBar.open('Car deleted successfully!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+          panelClass: ['success-snackbar'],
+      });
+        this.loadCars();
       },
       error: (error) => {
         this.errorMessage = 'Failed to delete car. Please try again.';
@@ -130,7 +164,7 @@ export class ProfileComponent implements OnInit {
     const dialogRef = this.dialog.open(AddCarDialogComponent, {
       width: '500px',
       panelClass: 'custom-dialog-container',
-      data: { car }, // "Edit" mode: pass the car data
+      data: { car },
     });
 
     dialogRef.componentInstance.isSubmitting = false;
@@ -140,8 +174,13 @@ export class ProfileComponent implements OnInit {
         dialogRef.componentInstance.isSubmitting = true;
         this.carService.updateCar(result.id, result).subscribe({
           next: () => {
-            console.log('Car updated successfully!');
-            this.loadCars(); // Reload the car list after updating
+            this.snackBar.open('Car updated successfully!', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: ['success-snackbar'],
+          });
+            this.loadCars();
             dialogRef.componentInstance.isSubmitting = false;
           },
           error: (error) => {

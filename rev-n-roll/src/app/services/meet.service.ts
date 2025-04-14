@@ -35,13 +35,16 @@ export class MeetService {
     return this.http.delete<void>(`${this.apiUrl}/deleteMeet/${meetId}`, { headers: this.getHeaders() });
   }
 
-  getMeets(latitude?: number, longitude?: number, distanceInKm?: number, tags?: string[]): Observable<SmallEvent[]> {
+  getMeetsF(latitude?: number, longitude?: number, distanceInKm?: number, tags?: string[]): Observable<SmallEvent[]> {
     let params = new HttpParams();
     if (latitude) params = params.set('Latitude', latitude.toString());
     if (longitude) params = params.set('Longitude', longitude.toString());
     if (distanceInKm) params = params.set('DistanceInKm', distanceInKm.toString());
     if (tags) params = params.set('Tags', tags.join(','));
 
-    return this.http.get<SmallEvent[]>(`${this.apiUrl}/getMeets`, { headers: this.getHeaders(), params });
+    return this.http.get<SmallEvent[]>(`${this.apiUrl}/getMeetsF`, { headers: this.getHeaders(), params });
+  }
+  getMeets(): Observable<SmallEvent[]> {   
+    return this.http.get<SmallEvent[]>(`${this.apiUrl}/getMeets`, { headers: this.getHeaders() });
   }
 }
