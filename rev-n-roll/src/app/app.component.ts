@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  title = "rev-n-roll";
   constructor(private authService: AuthService) {}
 
   isLoggedIn(): boolean {
