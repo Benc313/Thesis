@@ -3,7 +3,7 @@
   <h2 class="text-2xl font-bold text-neon-red mb-4">Car Meets</h2>
 
   <!-- Filters Section -->
-  <div class="mb-6 flex flex-wrap gap-4">
+  <div class="mb-6 flex flex-wrap gap-4 items-center">
     <!-- Tags Filter -->
     <mat-form-field appearance="fill" class="w-64">
       <mat-label>Filter by Tags</mat-label>
@@ -12,27 +12,31 @@
       </mat-select>
     </mat-form-field>
 
-    <!-- City Filter -->
-    <mat-form-field appearance="fill" class="w-64">
-      <mat-label>Select City</mat-label>
-      <mat-select [(ngModel)]="selectedCity" (ngModelChange)="updateCoordinates()">
-        <mat-option *ngFor="let city of cities" [value]="city.name">
-          {{ city.name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <!-- Set Location Button -->
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="openMapDialog()"
+    >
+      <mat-icon>location_on</mat-icon>
+      Set Location
+    </button>
 
-    <!-- Distance Filter -->
-    <mat-form-field appearance="fill" class="w-32">
-      <mat-label>Distance (km)</mat-label>
-      <input matInput type="number" [(ngModel)]="distanceInKm" (ngModelChange)="applyFilters()" min="0">
-    </mat-form-field>
+    <!-- Filter Button -->
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="applyFilters()"
+    >
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
   </div>
 
   <!-- Two-Column Layout -->
-  <div class="flex flex-col md:flex-row gap-6">
+  <div class="flex flex-col md:flex-row gap-6 align-top">
     <!-- Left Column: All Meets -->
-    <div class="flex-1">
+    <div class="flex-1 min-h-[400px]">
       <h3 class="text-xl font-semibold text-neon-blue mb-2">All Meets</h3>
       
       <!-- Loading State -->
@@ -69,7 +73,7 @@
     </div>
 
     <!-- Right Column: User's Meets -->
-    <div class="flex-1">
+    <div class="flex-1 min-h-[400px]">
       <h3 class="text-xl font-semibold text-neon-blue mb-2">Your Meets</h3>
 
       <!-- Loading State -->
@@ -100,28 +104,30 @@
               <p class="text-gray-300">{{ meet.private ? 'Private' : 'Public' }}</p>
               <p class="text-gray-300">{{ meet.isMeet ? 'Meet' : 'Event' }}</p>
             </mat-card-content>
-            <!-- Edit, Delete, and View Buttons -->
-            <button
-              mat-icon-button
-              class="absolute top-2 right-14 text-purple-400 hover:text-purple-600"
-              (click)="onEditMeet(meet); $event.stopPropagation()"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              class="absolute top-2 right-8 text-blue-400 hover:text-blue-600"
-              (click)="viewMeet(meet.id); $event.stopPropagation()"
-            >
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              class="absolute top-2 right-2 text-red-400 hover:text-red-600"
-              (click)="onDeleteMeet(meet.id, $event)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
+            <!-- Buttons Container -->
+            <div class="button-container flex justify-end gap-2 mt-2">
+              <button
+                mat-icon-button
+                class="text-purple-400 hover:text-purple-600"
+                (click)="onEditMeet(meet); $event.stopPropagation()"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                class="text-blue-400 hover:text-blue-600"
+                (click)="viewMeet(meet.id); $event.stopPropagation()"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                class="text-red-400 hover:text-red-600"
+                (click)="onDeleteMeet(meet.id, $event)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </mat-card>
         </div>
 

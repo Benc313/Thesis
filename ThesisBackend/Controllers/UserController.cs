@@ -62,7 +62,8 @@ public class UserController : ControllerBase
 			return NotFound(new { message = "User not found" });
 		}
 		var events = await _context.Meets
-			.Where(m => m.Users.Any(u => u.Id == userId))
+			.Include(m => m.Users)
+			.Where(m => m.Users.Any(u => u.Id == userId) || m.CreatorId == userId)
 			.ToListAsync();
 		if (events == null)
 			return NotFound(new { message = "No events found for this user" });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MeetService } from '../../services/meet.service';
 import { SmallEvent } from '../../models/event';
@@ -6,22 +6,23 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AddMeetDialogComponent } from '../add-meet-dialog/add-meet-dialog.component';
 import { MeetRequest } from '../../models/meet';
 import { MatSpinner } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
-import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import { MatOption, MatSelect, MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { UserService } from '../../services/user.service';
+import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
 
 @Component({
   selector: 'app-meets',
   standalone: true,
-  imports: [    
+  imports: [
     CommonModule,
     FormsModule,
     NavBarComponent,
@@ -35,11 +36,12 @@ import { UserService } from '../../services/user.service';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    GoogleMapsModule,
   ],
   templateUrl: './meets.component.html',
   styleUrls: ['./meets.component.css']
 })
-export class MeetsComponent implements OnInit {
+export class MeetsComponent implements OnInit, AfterViewInit {
   allMeets: SmallEvent[] = [];
   userMeets: SmallEvent[] = [];
   userId: number = parseInt(localStorage.getItem('id') || '0', 10);
@@ -51,14 +53,6 @@ export class MeetsComponent implements OnInit {
   // Filter properties
   availableTags: string[] = ['Car Show', 'Drift', 'Cruise', 'Tuning', 'Classic Cars'];
   selectedTags: string[] = [];
-  cities: { name: string, lat: number, lng: number }[] = [
-    { name: 'Budapest', lat: 47.4979, lng: 19.0402 },
-    { name: 'Debrecen', lat: 47.5316, lng: 21.6273 },
-    { name: 'Szeged', lat: 46.2530, lng: 20.1414 },
-    { name: 'Pécs', lat: 46.0727, lng: 18.2323 },
-    { name: 'Győr', lat: 47.6875, lng: 17.6504 },
-  ];
-  selectedCity: string = '';
   latitude: number | undefined;
   longitude: number | undefined;
   distanceInKm: number = 50;
@@ -76,11 +70,19 @@ export class MeetsComponent implements OnInit {
     this.loadUserMeets();
   }
 
+  ngAfterViewInit(): void {
+    // Map will be initialized in the dialog
+  }
+
   loadAllMeets() {
     this.isLoadingAllMeets = true;
     this.errorMessageAllMeets = null;
 
-    this.meetService.getMeets(
+    this.meetService.getMeetsF(
+      this.latitude,
+      this.longitude,
+      this.distanceInKm,
+      this.selectedTags
     ).subscribe({
       next: (meets) => {
         this.allMeets = meets;
@@ -100,7 +102,8 @@ export class MeetsComponent implements OnInit {
 
     this.userService.getUserMeets(this.userId).subscribe({
       next: (meets) => {
-        this.userMeets = meets.filter(meet => meet.id === this.userId);
+        console.log('User meets:', meets, "User ID:", this.userId);
+        this.userMeets = meets;
         this.isLoadingUserMeets = false;
       },
       error: (error) => {
@@ -115,16 +118,24 @@ export class MeetsComponent implements OnInit {
     this.loadAllMeets();
   }
 
-  updateCoordinates() {
-    const city = this.cities.find(c => c.name === this.selectedCity);
-    if (city) {
-      this.latitude = city.lat;
-      this.longitude = city.lng;
-      this.applyFilters();
-    } else {
-      this.latitude = undefined;
-      this.longitude = undefined;
-    }
+  openMapDialog() {
+    const dialogRef = this.dialog.open(MapDialogComponent, {
+      width: '600px',
+      data: {
+        latitude: this.latitude,
+        longitude: this.longitude,
+        distanceInKm: this.distanceInKm
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.latitude = result.latitude;
+        this.longitude = result.longitude;
+        this.distanceInKm = result.distanceInKm;
+        this.applyFilters();
+      }
+    });
   }
 
   viewMeet(meetId: number) {
@@ -211,6 +222,101 @@ export class MeetsComponent implements OnInit {
         this.errorMessageUserMeets = 'Failed to delete meet. Please try again.';
         console.error('Error deleting meet:', error);
       },
+    });
+  }
+}
+
+@Component({
+  selector: 'app-map-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    GoogleMapsModule,
+  ],
+  template: `
+    <h2 mat-dialog-title>Select Location</h2>
+    <mat-dialog-content>
+      <google-map
+        #map
+        height="400px"
+        width="100%"
+        [center]="center"
+        [zoom]="zoom"
+        (mapClick)="onMapClick($event)"
+      >
+        <map-marker
+          *ngIf="markerPosition"
+          [position]="markerPosition"
+        ></map-marker>
+      </google-map>
+      <div class="mt-4 flex items-center gap-4">
+        <mat-form-field appearance="fill" class="w-32">
+          <mat-label>Distance (km)</mat-label>
+          <input matInput type="number" [(ngModel)]="distanceInKm" min="0">
+        </mat-form-field>
+        <p *ngIf="latitude && longitude" class="text-gray-300">
+          Selected: ({{ latitude.toFixed(4) }}, {{ longitude.toFixed(4) }})
+        </p>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="accent" (click)="onSave()">Save</button>
+    </mat-dialog-actions>
+  `,
+  styles: [`
+    google-map { display: block; }
+  `]
+})
+export class MapDialogComponent implements AfterViewInit {
+  @ViewChild('map') map!: GoogleMap;
+  latitude: number | undefined;
+  longitude: number | undefined;
+  distanceInKm: number;
+  center: google.maps.LatLngLiteral = { lat: 47.4979, lng: 19.0402 }; // Default to Budapest
+  zoom = 10;
+  markerPosition: google.maps.LatLngLiteral | undefined;
+
+  constructor(
+    public dialogRef: MatDialogRef<MapDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { latitude: number | undefined, longitude: number | undefined, distanceInKm: number }
+  ) {
+    this.latitude = data.latitude;
+    this.longitude = data.longitude;
+    this.distanceInKm = data.distanceInKm;
+
+    if (this.latitude && this.longitude) {
+      this.center = { lat: this.latitude, lng: this.longitude };
+      this.markerPosition = { lat: this.latitude, lng: this.longitude };
+    }
+  }
+
+  ngAfterViewInit(): void {
+    // Map is initialized via the google-map component
+  }
+
+  onMapClick(event: google.maps.MapMouseEvent) {
+    if (event.latLng) {
+      this.latitude = event.latLng.lat();
+      this.longitude = event.latLng.lng();
+      this.markerPosition = { lat: this.latitude, lng: this.longitude };
+    }
+  }
+
+  onCancel(): void {
+    this.dialogRef.close();
+  }
+
+  onSave(): void {
+    this.dialogRef.close({
+      latitude: this.latitude,
+      longitude: this.longitude,
+      distanceInKm: this.distanceInKm
     });
   }
 }

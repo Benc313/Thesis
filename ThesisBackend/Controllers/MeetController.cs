@@ -21,6 +21,7 @@ public class MeetController : ControllerBase
 	[HttpPost("addMeet/{userId}")]
 	public async Task<ActionResult<MeetResponse>> AddMeet(MeetRequest meetRequest, int userId)
 	{
+		Console.WriteLine(meetRequest.Name);
 		//Here comes the validation later on for the validation of the request
 		var user = await _context.Users.FindAsync(userId);
 		if (user == null)
@@ -32,6 +33,30 @@ public class MeetController : ControllerBase
 		_context.Meets.Add(newMeet);
 		await _context.SaveChangesAsync();
 		return Ok(new MeetResponse(newMeet));
+	}
+	
+	[HttpPut("joinMeet/{meetId}/{userId}")]
+	public async Task<ActionResult> JoinMeet(int meetId, int userId)
+	{
+		var meet = await _context.Meets.FindAsync(meetId);
+		if (meet == null)
+		{
+			return NotFound(new { message = "Meet not found" });
+		}
+		var user = await _context.Users.FindAsync(userId);
+		if (user == null)
+		{
+			return NotFound(new { message = "User not found" });
+		}
+		if (meet.Users.Contains(user))
+		{
+			return BadRequest(new { message = "User already joined the meet" });
+		}
+		
+		meet.Users.Add(user);
+		await _context.SaveChangesAsync();
+		
+		return Ok(new { message = "User joined the meet successfully" });
 	}
 	
 	//[Authorize]	//Uncomment this line to enable authorization
@@ -110,9 +135,14 @@ public class MeetController : ControllerBase
 			{
 				try
 				{
+					Console.WriteLine(m.Name);
+					Console.WriteLine(CalculateDistance(m.Latitude, m.Longitude, 
+						query.Latitude, query.Longitude) <= query.DistanceInKm);
+					Console.WriteLine( m.Date >= DateTime.Today);
+					Console.WriteLine(query.Tags.Count == 0 || query.Tags.Count == 1 || m.Tags.Any(t => query.Tags.Contains(t.ToString())));
 					return CalculateDistance(m.Latitude, m.Longitude, 
 						       query.Latitude, query.Longitude) <= query.DistanceInKm &&
-					       (query.Tags.Count == 0 || m.Tags.Any(t => query.Tags.Contains(t.ToString())) && m.Date >= DateTime.Today);
+					       (query.Tags.Count == 0 || query.Tags.Count == 1 || m.Tags.Any(t => query.Tags.Contains(t.ToString())) && m.Date >= DateTime.Today);
 				}
 				catch
 				{
@@ -121,7 +151,7 @@ public class MeetController : ControllerBase
 			})
 			.ToList();
 
-		if (filteredMeets == null || filteredMeets.Count == 0)
+		if (filteredMeets == null)
 		{
 			return NotFound(new { message = "No meets found" });
 		}

@@ -1,98 +1,108 @@
-<!-- add-meet-dialog.component.html -->
 <div class="dialog-container">
-    <mat-icon class="meet-icon">event</mat-icon>
-    <h2 class="dialog-title">{{ isEditMode ? 'Edit Meet' : 'Create a New Meet' }}</h2>
-    <form [formGroup]="meetForm" (ngSubmit)="onSubmit()" class="form-content">
-      <!-- Name -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Meet Name</mat-label>
-        <input matInput formControlName="name" required>
-        <mat-error *ngIf="meetForm.get('name')?.hasError('required')">
-          Meet name is required
-        </mat-error>
-        <mat-error *ngIf="meetForm.get('name')?.hasError('minlength')">
-          Meet name must be at least 2 characters
-        </mat-error>
-        <mat-error *ngIf="meetForm.get('name')?.hasError('maxlength')">
-          Meet name cannot exceed 100 characters
-        </mat-error>
-      </mat-form-field>
-  
-      <!-- Description -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description" rows="3"></textarea>
-        <mat-error *ngIf="meetForm.get('description')?.hasError('maxlength')">
-          Description cannot exceed 500 characters
-        </mat-error>
-      </mat-form-field>
-  
-      <!-- Crew ID -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Crew ID (optional)</mat-label>
-        <input matInput type="number" formControlName="crewId">
-      </mat-form-field>
-  
-      <!-- Location -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Location</mat-label>
-        <input matInput formControlName="location" required>
-        <mat-error *ngIf="meetForm.get('location')?.hasError('required')">
-          Location is required
-        </mat-error>
-        <mat-error *ngIf="meetForm.get('location')?.hasError('maxlength')">
-          Location cannot exceed 200 characters
-        </mat-error>
-      </mat-form-field>
-  
-      <!-- Coordinates -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Coordinates (lat,long)</mat-label>
-        <input matInput formControlName="coordinates" required placeholder="e.g., 40.7128,-74.0060">
-        <mat-error *ngIf="meetForm.get('coordinates')?.hasError('required')">
-          Coordinates are required
-        </mat-error>
-        <mat-error *ngIf="meetForm.get('coordinates')?.hasError('pattern')">
-          Coordinates must be in the format latitude,longitude (e.g., 40.7128,-74.0060)
-        </mat-error>
-      </mat-form-field>
-  
-      <!-- Date -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Meet Date</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" required>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-error *ngIf="meetForm.get('date')?.hasError('required')">
-          Meet date is required
-        </mat-error>
-      </mat-form-field>
-  
-      <!-- Private -->
-      <mat-checkbox formControlName="private" color="primary">
-        Private Meet
-      </mat-checkbox>
-  
-      <!-- Tags -->
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Tags</mat-label>
-        <mat-select formControlName="tags" multiple required>
-          <mat-option *ngFor="let tag of meetTagsOptions" [value]="tag">
-            {{ tag }}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="meetForm.get('tags')?.hasError('required')">
-          At least one tag is required
-        </mat-error>
-      </mat-form-field>
-  
-      <!-- Buttons -->
-      <div class="button-container">
-        <button mat-button type="button" class="cancel-button" (click)="onCancel()">Cancel</button>
-        <button mat-raised-button type="submit" color="primary" class="submit-button" [disabled]="meetForm.invalid || isSubmitting">
-          <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
-          <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update Meet' : 'Create Meet' }}</span>
-        </button>
-      </div>
-    </form>
-  </div>
+  <mat-icon class="meet-icon">event</mat-icon>
+  <h2 class="dialog-title">{{ isEditMode ? 'Edit Meet' : 'Create a New Meet' }}</h2>
+  <form [formGroup]="meetForm" (ngSubmit)="onSubmit()" class="form-content">
+    <!-- Name -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Meet Name</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="meetForm.get('name')?.hasError('required')">
+        Meet name is required
+      </mat-error>
+      <mat-error *ngIf="meetForm.get('name')?.hasError('minlength')">
+        Meet name must be at least 2 characters
+      </mat-error>
+      <mat-error *ngIf="meetForm.get('name')?.hasError('maxlength')">
+        Meet name cannot exceed 64 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      <mat-error *ngIf="meetForm.get('description')?.hasError('maxlength')">
+        Description cannot exceed 500 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Crew ID -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Crew ID (optional)</mat-label>
+      <input matInput type="number" formControlName="crewId">
+    </mat-form-field>
+
+    <!-- Location -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location" required>
+      <mat-error *ngIf="meetForm.get('location')?.hasError('required')">
+        Location is required
+      </mat-error>
+      <mat-error *ngIf="meetForm.get('location')?.hasError('maxlength')">
+        Location cannot exceed 128 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Location Selection with Map -->
+    <div class="location-selection">
+      <button mat-raised-button color="accent" type="button" (click)="openMapDialog()">
+        <mat-icon>location_on</mat-icon>
+        Select Location on Map
+      </button>
+      <p *ngIf="meetForm.get('latitude')?.value && meetForm.get('longitude')?.value" class="text-gray-300 mt-2">
+        Selected: ({{ meetForm.get('latitude')?.value.toFixed(4) }}, {{ meetForm.get('longitude')?.value.toFixed(4) }})
+      </p>
+      <mat-error *ngIf="meetForm.get('latitude')?.hasError('required') || meetForm.get('longitude')?.hasError('required')">
+        Location coordinates are required
+      </mat-error>
+    </div>
+
+    <!-- Date -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Meet Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="date" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="meetForm.get('date')?.hasError('required')">
+        Meet date is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Time -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Meet Time</mat-label>
+      <input matInput type="time" formControlName="time" required>
+      <mat-error *ngIf="meetForm.get('time')?.hasError('required')">
+        Meet time is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Private -->
+    <mat-checkbox formControlName="private" color="primary">
+      Private Meet
+    </mat-checkbox>
+
+    <!-- Tags -->
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Tags</mat-label>
+      <mat-select formControlName="tags" multiple required>
+        <mat-option *ngFor="let tag of meetTagsOptions" [value]="tag">
+          {{ tag }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="meetForm.get('tags')?.hasError('required')">
+        At least one tag is required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Buttons -->
+    <div class="button-container">
+      <button mat-button type="button" class="cancel-button" (click)="onCancel()">Cancel</button>
+      <button mat-raised-button type="submit" color="primary" class="submit-button" [disabled]="meetForm.invalid || isSubmitting">
+        <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+        <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update Meet' : 'Create Meet' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

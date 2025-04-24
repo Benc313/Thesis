@@ -26,7 +26,7 @@ public class Meet
 	public string Location { get; set; }
 
 	[Required]
-	[StringLength(32)]
+	[StringLength(64)]
 	public string Coordinates { get; set; }
 	
 	[Required]
