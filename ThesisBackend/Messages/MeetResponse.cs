@@ -14,6 +14,7 @@ public class MeetResponse
 	public DateTime Date { get; set; }
 	public bool Private { get; set; }
 	public List<MeetTags> Tags { get; set; } = new List<MeetTags>();
+	public List<UserResponse> Users { get; set; } = new List<UserResponse>();
 	
 	public MeetResponse(Meet meet)
 	{
@@ -28,4 +29,20 @@ public class MeetResponse
 		Private = meet.Private;
 		Tags = meet.Tags;
 	}
+	
+	public MeetResponse(Meet meet, List<User> users)
+	{
+		Id = meet.Id;
+		Name = meet.Name;
+		Description = meet.Description;
+		CreatorId = meet.CreatorId;
+		CrewId = meet.CrewId;
+		Location = meet.Location;
+		Coordinates = meet.Coordinates;
+		Date = meet.Date;
+		Private = meet.Private;
+		Tags = meet.Tags;
+		Users = users.Select(user => new UserResponse(user)).ToList();
+	}
+	
 }

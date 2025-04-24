@@ -1,0 +1,62 @@
+<div class="dialog-container">
+    <button mat-icon-button class="close-button" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  
+    <div class="content-wrapper" *ngIf="!isLoading; else loading">
+      <div class="left-section">
+        <h2 class="meet-title">{{ meet?.name || 'No title' }}</h2>
+        <div class="meet-details">
+          <p><strong>Location:</strong> {{ meet?.location || 'No location' }}</p>
+          <p><strong>Date:</strong> {{ getFormattedDate(meet?.date) }}</p>
+          <p><strong>Private:</strong> {{ meet?.private ? 'Yes' : 'No' }}</p>
+          <p><strong>Tags:</strong> {{ getTagsDisplay(meet?.tags) }}</p>
+          <p><strong>Description:</strong> {{ meet?.description || 'No description provided.' }}</p>
+        </div>
+  
+        <div class="map-container">
+          <google-map
+            [options]="mapOptions"
+            height="300px"
+            width="100%">
+            <map-marker
+              *ngIf="markerPosition"
+              [position]="markerPosition">
+            </map-marker>
+          </google-map>
+        </div>
+  
+        <div class="join-section" *ngIf="!hasJoined">
+          <h3>Join This Meet</h3>
+          <button
+            mat-raised-button
+            color="primary"
+            class="join-button"
+            (click)="joinMeet()"
+            [disabled]="isSubmitting">
+            <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+            <span *ngIf="!isSubmitting">Join Meet</span>
+          </button>
+        </div>
+        <div class="joined-message" *ngIf="hasJoined">
+          <p>You have joined this meet!</p>
+        </div>
+      </div>
+  
+      <div class="right-section">
+        <h3>Participants ({{ meet?.users?.length ?? 0 }})</h3>
+        <div class="users-list">
+          <div *ngFor="let user of meet?.users" class="user-card">
+            <p class="user-name">{{ user?.nickname || 'Unknown user' }}</p>
+          </div>
+          <p *ngIf="!meet?.users?.length" class="no-users">No users have joined yet.</p>
+        </div>
+      </div>
+    </div>
+  
+    <ng-template #loading>
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-template>
+  </div>

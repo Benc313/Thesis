@@ -34,6 +34,10 @@ export class MeetService {
   deleteMeet(meetId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/deleteMeet/${meetId}`, { headers: this.getHeaders() });
   }
+  
+  joinMeet(meetId: number, userId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/joinMeet/${meetId}/${userId}`, {}, { headers: this.getHeaders() });
+  }
 
   getMeetsF(latitude?: number, longitude?: number, distanceInKm?: number, tags?: string[]): Observable<SmallEvent[]> {
     let params = new HttpParams();

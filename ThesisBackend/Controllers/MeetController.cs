@@ -83,12 +83,13 @@ public class MeetController : ControllerBase
 	[HttpGet("getMeet/{meetId}")]
 	public async Task<ActionResult<MeetResponse>> GetMeet(int meetId)
 	{
-		var meet = await _context.Meets.FindAsync(meetId);
+		var meet = _context.Meets.Include(m => m.Users).FirstOrDefault(m => m.Id == meetId);
 		if (meet == null)
 		{
 			return NotFound(new { message = "Meet not found" });
 		}
-		return Ok(new MeetResponse(meet));
+		var users = meet.Users.ToList();
+		return Ok(new MeetResponse(meet, users));
 	}
 
 	//[Authorize]	//Uncomment this line to enable authorization

@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogRef, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AddMeetDialogComponent } from '../add-meet-dialog/add-meet-dialog.component';
+import { MeetDetailsDialogComponent } from '../meet-details-dialog/meet-details-dialog.component'; // Add this import
 import { MeetRequest } from '../../models/meet';
 import { MatSpinner } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
@@ -32,6 +33,7 @@ import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/
     MatDialogModule,
     MatSnackBarModule,
     AddMeetDialogComponent,
+    MeetDetailsDialogComponent, // Add this to imports
     MatSpinner,
     MatFormFieldModule,
     MatSelectModule,
@@ -139,7 +141,14 @@ export class MeetsComponent implements OnInit, AfterViewInit {
   }
 
   viewMeet(meetId: number) {
-    this.router.navigate(['/meet', meetId]);
+    this.dialog.open(MeetDetailsDialogComponent, {
+      width: '100%',
+      height: '100%',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      panelClass: 'full-screen-dialog',
+      data: { meetId }
+    });
   }
 
   onCreateMeet() {
