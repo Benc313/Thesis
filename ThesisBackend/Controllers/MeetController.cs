@@ -136,11 +136,6 @@ public class MeetController : ControllerBase
 			{
 				try
 				{
-					Console.WriteLine(m.Name);
-					Console.WriteLine(CalculateDistance(m.Latitude, m.Longitude, 
-						query.Latitude, query.Longitude) <= query.DistanceInKm);
-					Console.WriteLine( m.Date >= DateTime.Today);
-					Console.WriteLine(query.Tags.Count == 0 || query.Tags.Count == 1 || m.Tags.Any(t => query.Tags.Contains(t.ToString())));
 					return CalculateDistance(m.Latitude, m.Longitude, 
 						       query.Latitude, query.Longitude) <= query.DistanceInKm &&
 					       (query.Tags.Count == 0 || query.Tags.Count == 1 || m.Tags.Any(t => query.Tags.Contains(t.ToString())) && m.Date >= DateTime.Today);
