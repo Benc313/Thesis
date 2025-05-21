@@ -1,0 +1,94 @@
+<div class="container">
+  <!-- Profile Section -->
+  <mat-card class="mb-8">
+    <div class="flex">
+      <div class="relative">
+        <img
+          [src]="user?.imageLocation || 'assets/default-profile.png'"
+          alt="Profile Picture"
+          class="profile-picture pulse-border"
+        />
+      </div>
+      <div class="flex-1">
+        <h2 class="profile-nickname">{{ user?.nickname || 'User' }}</h2>
+        <p class="text-lg italic text-gray-300">{{ user?.description || 'No description yet.' }}</p>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mt-4"
+          (click)="onEditProfile()"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Cars and Crews Section -->
+  <div class="cards-container">
+    <!-- Cars Section -->
+    <mat-card class="card-item">
+      <mat-card-title>Cars</mat-card-title>
+      <mat-card-content>
+        <!-- Empty State -->
+        <div *ngIf="!cars || cars.length === 0" class="text-center py-8">
+          <p class="text-lg text-gray-300">You haven't added any cars yet.</p>
+          <button
+            mat-raised-button
+            color="accent"
+            class="mt-4"
+            (click)="onAddCar()"
+          >
+            Add Your First Car
+          </button>
+        </div>
+
+        <!-- Car List -->
+        <div *ngFor="let car of cars" class="mb-6">
+          <mat-card class="car-card" (click)="openEditCarDialog(car)">
+            <div class="relative">
+              <mat-card-title>
+                {{ car.brand }} {{ car.model }}
+              </mat-card-title>
+              <mat-card-subtitle>
+                Engine: {{ car.engine }} | HP: {{ car.horsePower }}
+              </mat-card-subtitle>
+              <mat-card-content>
+                <p class="mt-2">{{ car.description || 'No description provided.' }}</p>
+              </mat-card-content>
+            </div>
+            <button
+              mat-icon-button
+              class="absolute top-2 right-2 text-red-400 hover:text-red-600"
+              (click)="deleteCar(car.id, $event)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card>
+        </div>
+
+        <!-- Add a Car Button (Shown only if there are cars) -->
+        <button
+          *ngIf="cars && cars.length > 0"
+          mat-raised-button
+          color="accent"
+          class="mt-4"
+          (click)="onAddCar()"
+        >
+          Add a Car
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Crews Section -->
+    <mat-card class="card-item">
+      <mat-card-title>Crews</mat-card-title>
+      <mat-card-content>
+        <div class="text-center py-8">
+          <p class="text-lg text-gray-300">Crews feature coming soon!</p>
+          <mat-icon class="text-4xl mt-4 pulse-icon">group</mat-icon>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

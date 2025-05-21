@@ -21,6 +21,7 @@ public class MeetController : ControllerBase
 	[HttpPost("addMeet/{userId}")]
 	public async Task<ActionResult<MeetResponse>> AddMeet(MeetRequest meetRequest, int userId)
 	{
+		Console.WriteLine(meetRequest.Name);
 		//Here comes the validation later on for the validation of the request
 		var user = await _context.Users.FindAsync(userId);
 		if (user == null)
@@ -32,6 +33,30 @@ public class MeetController : ControllerBase
 		_context.Meets.Add(newMeet);
 		await _context.SaveChangesAsync();
 		return Ok(new MeetResponse(newMeet));
+	}
+	
+	[HttpPut("joinMeet/{meetId}/{userId}")]
+	public async Task<ActionResult> JoinMeet(int meetId, int userId)
+	{
+		var meet = await _context.Meets.FindAsync(meetId);
+		if (meet == null)
+		{
+			return NotFound(new { message = "Meet not found" });
+		}
+		var user = await _context.Users.FindAsync(userId);
+		if (user == null)
+		{
+			return NotFound(new { message = "User not found" });
+		}
+		if (meet.Users.Contains(user))
+		{
+			return BadRequest(new { message = "User already joined the meet" });
+		}
+		
+		meet.Users.Add(user);
+		await _context.SaveChangesAsync();
+		
+		return Ok(new { message = "User joined the meet successfully" });
 	}
 	
 	//[Authorize]	//Uncomment this line to enable authorization
@@ -58,12 +83,13 @@ public class MeetController : ControllerBase
 	[HttpGet("getMeet/{meetId}")]
 	public async Task<ActionResult<MeetResponse>> GetMeet(int meetId)
 	{
-		var meet = await _context.Meets.FindAsync(meetId);
+		var meet = _context.Meets.Include(m => m.Users).FirstOrDefault(m => m.Id == meetId);
 		if (meet == null)
 		{
 			return NotFound(new { message = "Meet not found" });
 		}
-		return Ok(new MeetResponse(meet));
+		var users = meet.Users.ToList();
+		return Ok(new MeetResponse(meet, users));
 	}
 
 	//[Authorize]	//Uncomment this line to enable authorization
@@ -79,10 +105,18 @@ public class MeetController : ControllerBase
 		await _context.SaveChangesAsync();
 		return Ok(new { message = "Meet deleted successfully" });
 	}
-	
-	//[Authorize]	//Uncomment this line to enable authorization
+
 	[HttpGet("getMeets")]
-	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeets([FromQuery] LocationQuery query)
+	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeets()
+	{
+		var meets = await _context.Meets
+			.ToListAsync();
+		return Ok(meets.Select(meet => new SmallEventResponse(meet)).ToList());	
+	}
+
+	//[Authorize]	//Uncomment this line to enable authorization
+	[HttpGet("getMeetsF")]
+	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeetsWithFilter([FromQuery] LocationQuery query)
 	{
 		// Input validation
 		if (query.Latitude < -90 || query.Latitude > 90 ||
@@ -104,7 +138,7 @@ public class MeetController : ControllerBase
 				{
 					return CalculateDistance(m.Latitude, m.Longitude, 
 						       query.Latitude, query.Longitude) <= query.DistanceInKm &&
-					       (query.Tags.Count == 0 || m.Tags.Any(t => query.Tags.Contains(t.ToString())) && m.Date >= DateTime.Today);
+					       (query.Tags.Count == 0 || query.Tags.Count == 1 || m.Tags.Any(t => query.Tags.Contains(t.ToString())) && m.Date >= DateTime.Today);
 				}
 				catch
 				{
@@ -113,7 +147,7 @@ public class MeetController : ControllerBase
 			})
 			.ToList();
 
-		if (filteredMeets == null || filteredMeets.Count == 0)
+		if (filteredMeets == null)
 		{
 			return NotFound(new { message = "No meets found" });
 		}

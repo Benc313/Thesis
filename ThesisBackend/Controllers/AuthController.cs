@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,7 @@ public class AuthController : ControllerBase
 	}
 	
 	[HttpPost("register")]
+	[AllowAnonymous]
 	public async Task<IActionResult> Register(RegistrationRequest registrationRequest)
 	{
 		//Here comes the validation later on for the validation of the request
@@ -33,6 +35,7 @@ public class AuthController : ControllerBase
 	}
 	
 	[HttpPost("login")]
+	[AllowAnonymous]
 	public async Task<IActionResult> Login(LoginRequest loginRequest)
 	{
 		//Here comes the validation later on for the validation of the request
@@ -58,8 +61,8 @@ public class AuthController : ControllerBase
 			HttpOnly = true,
 			Secure = true,
 			SameSite = SameSiteMode.Lax,
-			Expires = DateTime.UtcNow.AddMinutes(30),
-			
+			Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+			Path = "/",
 		});
 	}
 	

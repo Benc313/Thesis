@@ -1,0 +1,16 @@
+<nav>
+  <div class="nav-container">
+    <div class="nav-logo">Rev_n_Roll</div>
+    <button class="nav-toggle" (click)="toggleMenu()">
+      <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+    <div class="nav-links" [ngClass]="{'nav-links-open': menuOpen}">
+      <a routerLink="/home" (click)="closeMenu()">Home</a>
+      <a routerLink="/meets" (click)="closeMenu()">Meets</a>
+      <a routerLink="/races" (click)="closeMenu()">Races</a>
+      <a routerLink="/crews" (click)="closeMenu()">Crews</a>
+      <a routerLink="/profile" (click)="closeMenu()">Profile</a>
+      <button (click)="logout(); closeMenu()">Logout</button>
+    </div>
+  </div>
+</nav>
