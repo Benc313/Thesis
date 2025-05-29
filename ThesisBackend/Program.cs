@@ -5,15 +5,23 @@ using Microsoft.IdentityModel.Tokens;
 using ThesisBackend;
 using ThesisBackend.Data;
 using ThesisBackend.Services.Authentication.Models;
+using FluentValidation.AspNetCore;
 
 using ThesisBackend.Application.Authentication.Interfaces;
 using ThesisBackend.Application.Authentication.Services;
 using ThesisBackend.Services.Authentication.Interfaces;
+using ThesisBackend.Services.Authentication.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(); // Add controllers for handling HTTP requests
+builder.Services.AddControllers()
+    .AddFluentValidation(config =>
+    {
+        config.RegisterValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
+        config.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
+        config.AutomaticValidationEnabled = false;
+    });
 builder.Services.AddOpenApi(); // Add OpenAPI/Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,7 +32,6 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"))
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenGenerator, TokenGenerator>(); // Assuming this is also needed by AuthService or other services
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>(); // Assuming this is also needed
-
 
 builder.Services.AddCors(options =>
 {
