@@ -44,7 +44,7 @@ public class AuthController : ControllerBase
 
 		if (!result.Success || string.IsNullOrEmpty(result.Token) || result.UserResponse == null)
 		{
-			// Re
+			// Return some meaningful error message
 			return Unauthorized(new { message = result.ErrorMessage ?? "Invalid credentials." });
 		}
 

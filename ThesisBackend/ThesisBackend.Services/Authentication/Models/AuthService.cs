@@ -1,4 +1,3 @@
-// Corrected using statements at the top
 using Microsoft.EntityFrameworkCore;
 using ThesisBackend.Application.Authentication.Interfaces; // For IAuthService, IPasswordHasher, ITokenGenerator
 using ThesisBackend.Application.Authentication.Models;    // For AuthOperationResult
@@ -7,7 +6,6 @@ using ThesisBackend.Domain.Messages;                      // For RegistrationReq
 using ThesisBackend.Domain.Models;
 using ThesisBackend.Services.Authentication.Interfaces; // For User
 
-// Corrected namespace for the AuthService class itself
 namespace ThesisBackend.Application.Authentication.Services
 {
     public class AuthService : IAuthService
