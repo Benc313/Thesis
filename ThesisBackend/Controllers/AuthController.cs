@@ -4,10 +4,13 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ThesisBackend.Application.Authentication.Interfaces;
 using ThesisBackend.Data;
 using ThesisBackend.Domain.Messages;
 using ThesisBackend.Domain.Models;
+using ThesisBackend.Services.Authentication.Models;
 
 namespace ThesisBackend.Controllers;
 
@@ -15,22 +18,28 @@ namespace ThesisBackend.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-	private readonly dbContext _context;
 	private readonly IConfiguration _configuration;
+	private readonly IAuthService _authService;
+	private readonly JwtSettings _jwtSettings;
 
-	public AuthController(dbContext context, IConfiguration configuration)
+	public AuthController(IAuthService authService, IConfiguration configuration, IOptions<JwtSettings> jwtSettings)
 	{
-		_context = context;
+		_authService = authService;
 		_configuration = configuration;
+		_jwtSettings = jwtSettings.Value;
 	}
 	
 	[HttpPost("register")]
 	[AllowAnonymous]
 	public async Task<IActionResult> Register(RegistrationRequest registrationRequest)
 	{
-		//Here comes the validation later on for the validation of the request
-		_context.Users.Add(new User(registrationRequest));
-		await _context.SaveChangesAsync();
+		var result = await _authService.RegisterAsync(registrationRequest);
+		if (!result.Success)
+		{
+			// Later on a more meaningful error message can be returned
+			return BadRequest(new { message = result.ErrorMessage });
+		}
+		
 		return Ok(new { message = "User registered successfully" });
 	}
 	
@@ -38,50 +47,24 @@ public class AuthController : ControllerBase
 	[AllowAnonymous]
 	public async Task<IActionResult> Login(LoginRequest loginRequest)
 	{
-		//Here comes the validation later on for the validation of the request
-		var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
-		if (user == null)
+		var result = await _authService.LoginAsync(loginRequest);
+
+		if (!result.Success || string.IsNullOrEmpty(result.Token) || result.UserResponse == null)
 		{
-			return Unauthorized();
-		}
-		if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash))
-		{
-			return Unauthorized();
+			// Re
+			return Unauthorized(new { message = result.ErrorMessage ?? "Invalid credentials." });
 		}
 
-		SetJWTToken(user);
-		return Ok(new LoginResponse(user));
-	}
-
-	private void SetJWTToken(User user)
-	{
-		var token = GenerateJwtToken(user);
-		Response.Cookies.Append("accessToken", token, new CookieOptions
+		// Set the JWT token in an HttpOnly cookie
+		Response.Cookies.Append("accessToken", result.Token, new CookieOptions
 		{
 			HttpOnly = true,
 			Secure = true,
 			SameSite = SameSiteMode.Lax,
-			Expires = DateTimeOffset.UtcNow.AddMinutes(30),
-			Path = "/",
+			Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+			Path = "/" // Cookie available for all paths
 		});
-	}
-	
-	private string GenerateJwtToken(User user)
-	{
-		var tokenHandler = new JwtSecurityTokenHandler();
-		var secret = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
-		var tokenDescriptor = new SecurityTokenDescriptor()
-		{
-			Subject = new ClaimsIdentity(new Claim[]
-			{
-				new Claim(ClaimTypes.Name, user.Id.ToString())
-			}),
-			Expires = DateTime.UtcNow.AddMinutes(30),
-			Issuer = _configuration["Jwt:Issuer"], // Set the Issuer
-			Audience = _configuration["Jwt:Audience"], // Set the Audience
-			SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
-		};
-		var token = tokenHandler.CreateToken(tokenDescriptor);
-		return tokenHandler.WriteToken(token);
+
+		return Ok(result.UserResponse);
 	}
 }

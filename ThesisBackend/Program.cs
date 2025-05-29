@@ -6,6 +6,10 @@ using ThesisBackend;
 using ThesisBackend.Data;
 using ThesisBackend.Services.Authentication.Models;
 
+using ThesisBackend.Application.Authentication.Interfaces;
+using ThesisBackend.Application.Authentication.Services;
+using ThesisBackend.Services.Authentication.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +20,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<ConnetcionString>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenGenerator, TokenGenerator>(); // Assuming this is also needed by AuthService or other services
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>(); // Assuming this is also needed
+
 
 builder.Services.AddCors(options =>
 {
