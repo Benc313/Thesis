@@ -37,4 +37,8 @@
       <_ContentIncludedByDefault Remove="ThesisBackend.Services\obj\ThesisBackend.Services.csproj.nuget.dgspec.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="ThesisBackend.Services\Authentication\" />
+    </ItemGroup>
+
 </Project>
