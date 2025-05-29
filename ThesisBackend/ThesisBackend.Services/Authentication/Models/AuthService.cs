@@ -1,6 +1,5 @@
 // Corrected using statements at the top
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using ThesisBackend.Application.Authentication.Interfaces; // For IAuthService, IPasswordHasher, ITokenGenerator
 using ThesisBackend.Application.Authentication.Models;    // For AuthOperationResult
 using ThesisBackend.Data;                                 // For dbContext

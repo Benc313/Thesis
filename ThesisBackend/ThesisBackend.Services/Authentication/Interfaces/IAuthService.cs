@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using ThesisBackend.Domain.Messages; 
 using ThesisBackend.Application.Authentication.Models;
 
