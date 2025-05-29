@@ -1,4 +1,4 @@
-namespace ThesisBackend.Messages;
+namespace ThesisBackend.Domain.Messages;
 
 public class LocationQuery
 {

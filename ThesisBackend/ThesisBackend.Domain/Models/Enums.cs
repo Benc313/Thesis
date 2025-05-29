@@ -1,4 +1,4 @@
-namespace ThesisBackend.Models;
+namespace ThesisBackend.Domain.Models;
 
 public enum Rank
 {

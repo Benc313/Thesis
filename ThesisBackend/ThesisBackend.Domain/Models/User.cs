@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ThesisBackend.Messages;
+using ThesisBackend.Domain.Messages;
 
-namespace ThesisBackend.Models;
+namespace ThesisBackend.Domain.Models;
 
 public class User
 {

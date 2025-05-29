@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ThesisBackend.Models;
+namespace ThesisBackend.Domain.Models;
 
 public class Race
 {

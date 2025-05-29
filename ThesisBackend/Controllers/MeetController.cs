@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThesisBackend.Data;
-using ThesisBackend.Messages;
-using ThesisBackend.Models;
+using ThesisBackend.Domain.Messages;
+using ThesisBackend.Domain.Models;
 
 namespace ThesisBackend.Controllers;
 

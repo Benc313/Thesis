@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ThesisBackend.Models;
+using ThesisBackend.Domain.Models;
 
 namespace ThesisBackend.Data;
 

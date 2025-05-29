@@ -1,6 +1,6 @@
-using ThesisBackend.Models;
+using ThesisBackend.Domain.Models;
 
-namespace ThesisBackend.Messages;
+namespace ThesisBackend.Domain.Messages;
 
 public class CarResponse
 {

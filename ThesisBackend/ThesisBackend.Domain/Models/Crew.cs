@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ThesisBackend.Models;
+namespace ThesisBackend.Domain.Models;
 
 public class Crew
 {
