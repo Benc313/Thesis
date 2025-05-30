@@ -26,8 +26,6 @@ namespace ThesisBackend.Application.Authentication.Services
 
         public async Task<AuthOperationResult> RegisterAsync(RegistrationRequest userRequest)
         {
-            //Validate the request
-            
             var user = new User(userRequest);
 
             _context.Users.Add(user);
@@ -40,8 +38,6 @@ namespace ThesisBackend.Application.Authentication.Services
 
         public async Task<AuthOperationResult> LoginAsync(LoginRequest request)
         {
-            //Validation
-
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null || !_passwordHasher.VerifyPassword(request.Password, user.PasswordHash))
