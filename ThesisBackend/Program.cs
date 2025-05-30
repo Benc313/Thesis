@@ -6,7 +6,7 @@ using ThesisBackend;
 using ThesisBackend.Data;
 using ThesisBackend.Services.Authentication.Models;
 using FluentValidation.AspNetCore;
-
+using Microsoft.AspNetCore.Diagnostics;
 using ThesisBackend.Application.Authentication.Interfaces;
 using ThesisBackend.Application.Authentication.Services;
 using ThesisBackend.Services.Authentication.Interfaces;
@@ -25,6 +25,7 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi(); // Add OpenAPI/Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddProblemDetails();
 
 builder.Services.Configure<ConnetcionString>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
@@ -95,7 +96,33 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage(); // Use developer exception page in development
 }
+else
+{
+    app.Run(async context =>
+    {
+        var exceptionHandler = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (exceptionHandler != null)
+        {
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(exceptionHandler.Error, "An unhandled exception has occurred.");
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError; // Internal Server Error
+            context.Response.ContentType = "application/json";
+            
+            var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+            {
+                Title = "An unexpected internal server error occurred.",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = "We are sorry, something went wrong on our end. Please try again later.",
+                Instance = context.Request.Path
+            };
+        }
+    });
+    app.UseHsts();
+}
+
+app.UseStatusCodePages();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

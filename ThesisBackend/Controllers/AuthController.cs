@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using ThesisBackend.Application.Authentication.Interfaces;
 using ThesisBackend.Domain.Messages;
@@ -46,8 +47,11 @@ public class AuthController : ControllerBase
 		var result = await _authService.RegisterAsync(registrationRequest);
 		if (!result.Success)
 		{
-			// Later on a more meaningful error message can be returned
-			return BadRequest(new { message = result.ErrorMessage });
+			return Problem(
+				statusCode: 400,
+				title: "Registration Failed", 
+				detail: result.ErrorMessage ?? "An error occurred during registration."
+			);
 		}
 		
 		return Ok(new { message = "User registered successfully" });
@@ -68,8 +72,11 @@ public class AuthController : ControllerBase
 
 		if (!result.Success || string.IsNullOrEmpty(result.Token) || result.UserResponse == null)
 		{
-			// Return some meaningful error message
-			return Unauthorized(new { message = result.ErrorMessage ?? "Invalid credentials." });
+			return Problem(
+				statusCode: 401,
+				title: "Login Failed",
+				detail: result.ErrorMessage ?? "Invalid username or password."
+			);
 		}
 
 		// Set the JWT token in an HttpOnly cookie
