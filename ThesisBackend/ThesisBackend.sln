@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisBackend.Domain", "The
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisBackend.Services", "ThesisBackend.Services\ThesisBackend.Services.csproj", "{B1795099-4813-4FE8-87D7-D8F3C2AB977C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisBackend.Services.Tests", "ThesisBackend.Services.Tests\ThesisBackend.Services.Tests.csproj", "{ACA169C8-CC7E-4F57-B02C-7159663958C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{B1795099-4813-4FE8-87D7-D8F3C2AB977C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1795099-4813-4FE8-87D7-D8F3C2AB977C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1795099-4813-4FE8-87D7-D8F3C2AB977C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

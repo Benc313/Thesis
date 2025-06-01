@@ -15,7 +15,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
         
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")
-            .EmailAddress().WithMessage("A valid email address is required..")
+            .EmailAddress().WithMessage("A valid email address is required.")
             .MustAsync(BeValidEmailAsync).WithMessage("An account does not exist with this email address.")
             .MaximumLength(320).WithMessage("Email must not exceed 320 characters.");
 
