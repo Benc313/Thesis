@@ -35,11 +35,11 @@ public class User
 	
 	public User() { }
 
-	public User(RegistrationRequest registrationRequest)
+	public User(RegistrationRequest registrationRequest, string hashedPassword)
 	{
 		Nickname = registrationRequest.Nickname;
 		Email = registrationRequest.Email;
-		PasswordHash = BCrypt.Net.BCrypt.HashPassword(registrationRequest.Password);
+		PasswordHash = hashedPassword;
 	}
 	
 	public void UpdateUser(UserRequest userRequest)

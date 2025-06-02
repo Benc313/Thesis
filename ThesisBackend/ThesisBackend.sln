@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisBackend.Services", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisBackend.Services.Tests", "ThesisBackend.Services.Tests\ThesisBackend.Services.Tests.csproj", "{ACA169C8-CC7E-4F57-B02C-7159663958C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThesisBackend.Api.Tests", "ThesisBackend.Api.Tests\ThesisBackend.Api.Tests.csproj", "{AE9C91F8-0F05-4945-880B-7913D459151A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACA169C8-CC7E-4F57-B02C-7159663958C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE9C91F8-0F05-4945-880B-7913D459151A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE9C91F8-0F05-4945-880B-7913D459151A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE9C91F8-0F05-4945-880B-7913D459151A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE9C91F8-0F05-4945-880B-7913D459151A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

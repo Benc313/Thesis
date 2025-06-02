@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ThesisBackend.Application.Authentication.Interfaces; // For IAuthService, IPasswordHasher, ITokenGenerator
-using ThesisBackend.Application.Authentication.Models;    // For AuthOperationResult
+using ThesisBackend.Services.Authentication.Models;    // For AuthOperationResult
 using ThesisBackend.Data;                                 // For dbContext
 using ThesisBackend.Domain.Messages;                      // For RegistrationRequest, LoginRequest
 using ThesisBackend.Domain.Models;
@@ -26,7 +26,7 @@ namespace ThesisBackend.Application.Authentication.Services
 
         public async Task<AuthOperationResult> RegisterAsync(RegistrationRequest userRequest)
         {
-            var user = new User(userRequest);
+            var user = new User(userRequest, _passwordHasher.HashPassword(userRequest.Password));
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();

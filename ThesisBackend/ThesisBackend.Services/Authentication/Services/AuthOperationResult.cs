@@ -1,4 +1,4 @@
-namespace ThesisBackend.Application.Authentication.Models
+namespace ThesisBackend.Services.Authentication.Models
 {
     public class AuthOperationResult
     {

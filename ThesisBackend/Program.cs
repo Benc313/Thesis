@@ -1,3 +1,5 @@
+// In Program.cs
+
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -10,131 +12,151 @@ using Microsoft.AspNetCore.Diagnostics;
 using ThesisBackend.Application.Authentication.Interfaces;
 using ThesisBackend.Application.Authentication.Services;
 using ThesisBackend.Services.Authentication.Interfaces;
+using ThesisBackend.Services.Authentication.Models;
 using ThesisBackend.Services.Authentication.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// --- Add this check ---
+bool isTestEnvironment = builder.Environment.IsEnvironment("Testing");
 
 // Add services to the container.
 builder.Services.AddControllers()
     .AddFluentValidation(config =>
     {
         config.RegisterValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
-        config.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>();
         config.AutomaticValidationEnabled = false;
     });
-builder.Services.AddOpenApi(); // Add OpenAPI/Swagger for API documentation
+
+builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 
-builder.Services.Configure<ConnetcionString>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<ConnetcionString>(builder.Configuration.GetSection("ConnectionStrings")); // Ensure ConnetcionString is the correct class name
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ITokenGenerator, TokenGenerator>(); // Assuming this is also needed by AuthService or other services
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>(); // Assuming this is also needed
+builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200") // Angular dev server
+        policy.WithOrigins("http://localhost:4200")
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials(); // If needed
+            .AllowCredentials();
     });
 });
-// Configure the database context with PostgreSQL
-builder.Services.AddDbContext<dbContext>(options => 
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// --- Conditional DbContext Registration ---
+if (!isTestEnvironment)
+{
+    builder.Services.AddDbContext<dbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+// In your tests, you will add the InMemory DbContext via ConfigureServices
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
+            ValidIssuer = jwtSettings?.Issuer,
+            ValidAudience = jwtSettings?.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.Secret ?? string.Empty))
         };
 
-        // Add custom logic to extract the token from the cookie
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                // Extract the token from the 'accessToken' cookie
                 var token = context.Request.Cookies["accessToken"];
                 if (!string.IsNullOrEmpty(token))
                 {
-                    context.Token = token; // Set the token for validation
+                    context.Token = token;
                 }
                 return Task.CompletedTask;
             }
         };
     });
+
 var app = builder.Build();
+
 app.UseCors("AllowAngularApp");
-using (var scope = app.Services.CreateScope())
+
+// --- Conditional Migration ---
+if (!isTestEnvironment) // Only run migrations if not in a test environment
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<dbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    try
+    using (var scope = app.Services.CreateScope())
     {
-        dbContext.Database.Migrate(); // Apply migrations
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "An error occurred while migrating the database.");
-        throw; // Re-throw the exception to stop the application
+        var dbCtx = scope.ServiceProvider.GetRequiredService<dbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        try
+        {
+            dbCtx.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while migrating the database.");
+            throw;
+        }
     }
 }
-if (app.Environment.IsDevelopment())
+
+if (app.Environment.IsDevelopment() || isTestEnvironment) // Also enable Swagger for "Testing" env if desired
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage(); // Use developer exception page in development
+    if (isTestEnvironment) // For tests, developer exception page might be useful
+    {
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+         app.UseDeveloperExceptionPage(); // Assuming this was intended for non-test dev
+    }
+    app.MapOpenApi();
 }
 else
 {
-    app.Run(async context =>
+    app.UseExceptionHandler(appBuilder =>
     {
-        var exceptionHandler = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
-        if (exceptionHandler != null)
+        appBuilder.Run(async context =>
         {
-            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogError(exceptionHandler.Error, "An unhandled exception has occurred.");
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError; // Internal Server Error
-            context.Response.ContentType = "application/json";
-            
-            var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+            if (exceptionHandlerFeature != null)
             {
-                Title = "An unexpected internal server error occurred.",
-                Status = StatusCodes.Status500InternalServerError,
-                Detail = "We are sorry, something went wrong on our end. Please try again later.",
-                Instance = context.Request.Path
-            };
-        }
+                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogError(exceptionHandlerFeature.Error, "An unhandled exception has occurred.");
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                // ... rest of your error handling
+                 var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "An unexpected internal server error occurred.",
+                    Detail = "We are sorry, something went wrong on our end. Please try again later.",
+                    Instance = context.Request.Path
+                };
+                await context.Response.WriteAsJsonAsync(problemDetails);
+            }
+        });
     });
     app.UseHsts();
 }
 
 app.UseStatusCodePages();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi(); // Map OpenAPI endpoints in development
-}
-
-app.UseHttpsRedirection(); // Redirect HTTP requests to HTTPS
-
-app.UseAuthentication(); // Enable authentication middleware
-app.UseAuthorization(); // Enable authorization middleware
-
-app.MapControllers(); // Map controller routes
-
-app.Run(); // Run the application
+public partial class Program { }

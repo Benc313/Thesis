@@ -1,5 +1,5 @@
 using ThesisBackend.Domain.Messages; 
-using ThesisBackend.Application.Authentication.Models;
+using ThesisBackend.Services.Authentication.Models;
 
 namespace ThesisBackend.Application.Authentication.Interfaces
 {

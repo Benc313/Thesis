@@ -6,17 +6,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>ThesisBackend</AssemblyName>
         <RootNamespace>ThesisBackend</RootNamespace>
-        
+        <EnsureMvcTestingManifestV2>true</EnsureMvcTestingManifestV2>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-        <PackageReference Include="FluentAssertions" Version="8.3.0" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0-rc.2.24474.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,29 +22,23 @@
         <PackageReference Include="Moq" Version="4.20.72" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
-        <PackageReference Include="xunit" Version="2.9.3" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="ThesisBackend.Data\bin\Debug\net9.0\ThesisBackend.Data.deps.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Data\bin\Debug\net9.0\ThesisBackend.Data.runtimeconfig.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Data\obj\Debug\net9.0\ThesisBackend.Data.sourcelink.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Data\obj\project.assets.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Data\obj\project.packagespec.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Data\obj\ThesisBackend.Data.csproj.nuget.dgspec.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Services\bin\Debug\net9.0\ThesisBackend.Services.deps.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Services\obj\Debug\net9.0\ThesisBackend.Services.sourcelink.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Services\obj\project.assets.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Services\obj\project.packagespec.json" />
-      <_ContentIncludedByDefault Remove="ThesisBackend.Services\obj\ThesisBackend.Services.csproj.nuget.dgspec.json" />
+        <ProjectReference Include="ThesisBackend.Data\ThesisBackend.Data.csproj" />
+        <ProjectReference Include="ThesisBackend.Services\ThesisBackend.Services.csproj" />
+        <ProjectReference Include="ThesisBackend.Domain\ThesisBackend.Domain.csproj" />
     </ItemGroup>
-
     <ItemGroup>
-      <Folder Include="ThesisBackend.Services\Authentication\" />
+        <InternalsVisibleTo Include="ThesisBackend.Api.Tests" />
+        <InternalsVisibleTo Include="ThesisBackend.Services.Tests" />
     </ItemGroup>
-
+    <ItemGroup>
+        <Compile Remove="ThesisBackend.Domain\**\*.cs" />
+        <Compile Remove="ThesisBackend.Data\**\*.cs" />
+        <Compile Remove="ThesisBackend.Services\**\*.cs" />
+        <Compile Remove="ThesisBackend.Api.Tests\**\*.cs" />
+        <Compile Remove="ThesisBackend.Services.Tests\**\*.cs" />
+    </ItemGroup>
+    
 </Project>
