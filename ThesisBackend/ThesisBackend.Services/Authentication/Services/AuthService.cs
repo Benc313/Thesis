@@ -34,7 +34,7 @@ namespace ThesisBackend.Application.Authentication.Services
             
             _logger.LogDebug("Hashing password for user {nickname}.", userRequest.Nickname);
             var hashedPassword = _passwordHasher.HashPassword(userRequest.Password);
-            var user = new User(userRequest, _passwordHasher.HashPassword(userRequest.Password));
+            var user = new User(userRequest, hashedPassword);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
