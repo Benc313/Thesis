@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThesisBackend.Data;
-using ThesisBackend.Messages;
+using ThesisBackend.Domain.Messages;
 
 namespace ThesisBackend.Controllers;
 [Route("api/v1/User")]

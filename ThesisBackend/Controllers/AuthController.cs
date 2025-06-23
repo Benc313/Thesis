@@ -1,13 +1,11 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using ThesisBackend.Data;
-using ThesisBackend.Messages;
-using ThesisBackend.Models;
+using Microsoft.Extensions.Options;
+using ThesisBackend.Application.Authentication.Interfaces;
+using ThesisBackend.Domain.Messages;
+using ThesisBackend.Services.Authentication.Models;
 
 namespace ThesisBackend.Controllers;
 
@@ -15,22 +13,55 @@ namespace ThesisBackend.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-	private readonly dbContext _context;
-	private readonly IConfiguration _configuration;
+	private readonly IAuthService _authService;
+	private readonly JwtSettings _jwtSettings;
+	
+	// FluentValidation validators for the request models
+	private readonly IValidator<RegistrationRequest> _registrationRequestValidator; 
+	private readonly IValidator<LoginRequest> _loginRequestValidator;
 
-	public AuthController(dbContext context, IConfiguration configuration)
+	private readonly ILogger<AuthController> _logger;
+	
+	public AuthController(IAuthService authService, IOptions<JwtSettings> jwtSettings, 
+		IValidator<RegistrationRequest> registrationRequestValidator, IValidator<LoginRequest> loginRequestValidator,
+		ILogger<AuthController> logger)
 	{
-		_context = context;
-		_configuration = configuration;
+		_logger = logger;
+		_authService = authService;
+		_jwtSettings = jwtSettings.Value;
+		_registrationRequestValidator = registrationRequestValidator;
+		_loginRequestValidator = loginRequestValidator;
 	}
 	
 	[HttpPost("register")]
 	[AllowAnonymous]
 	public async Task<IActionResult> Register(RegistrationRequest registrationRequest)
 	{
-		//Here comes the validation later on for the validation of the request
-		_context.Users.Add(new User(registrationRequest));
-		await _context.SaveChangesAsync();
+		_logger.LogInformation("Received registration request for user: {nickname} with email: {email}",
+			registrationRequest.Nickname, registrationRequest.Email);
+		var validationResult = await _registrationRequestValidator.ValidateAsync(registrationRequest);
+
+		if (!validationResult.IsValid)
+		{
+			validationResult.AddToModelState(ModelState);
+			_logger.LogWarning("Registration request validation failed for user: {nickname} with email: {email}, with errors: {errors}",
+				registrationRequest.Nickname, registrationRequest.Email, validationResult.ToDictionary());
+			return ValidationProblem(ModelState); // Returns a 400 Bad Request with ProblemDetails
+		}
+		
+		var result = await _authService.RegisterAsync(registrationRequest);
+		if (!result.Success)
+		{
+			_logger.LogError("Registration failed for user: {nickname} with email: {email}, error: {error}",
+				registrationRequest.Nickname, registrationRequest.Email, result.ErrorMessage);
+			return Problem(
+				statusCode: 400,
+				title: "Registration Failed", 
+				detail: result.ErrorMessage ?? "An error occurred during registration."
+			);
+		}
+		_logger.LogInformation("User registered successfully: {nickname} with email: {email}",
+			registrationRequest.Nickname, registrationRequest.Email);
 		return Ok(new { message = "User registered successfully" });
 	}
 	
@@ -38,50 +69,40 @@ public class AuthController : ControllerBase
 	[AllowAnonymous]
 	public async Task<IActionResult> Login(LoginRequest loginRequest)
 	{
-		//Here comes the validation later on for the validation of the request
-		var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
-		if (user == null)
+		_logger.LogInformation("Received login request for email: {email}", loginRequest.Email);
+		var validationResult = await _loginRequestValidator.ValidateAsync(loginRequest);
+		if (!validationResult.IsValid)
 		{
-			return Unauthorized();
+			_logger.LogWarning("Login request validation failed for email: {email}, with errors: {errors}",
+				loginRequest.Email, validationResult.ToDictionary());
+			validationResult.AddToModelState(ModelState);
+			return ValidationProblem(ModelState); // Returns a 400 Bad Request with ProblemDetails
 		}
-		if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash))
+		_logger.LogDebug("Validation passed for login request with email: {email}", loginRequest.Email);
+		var result = await _authService.LoginAsync(loginRequest);
+
+		if (!result.Success || string.IsNullOrEmpty(result.Token) || result.UserResponse == null)
 		{
-			return Unauthorized();
+			_logger.LogWarning("Login failed for email: {email}, error: {error}",
+				loginRequest.Email, result.ErrorMessage);
+			return Problem(
+				statusCode: 401,
+				title: "Login Failed",
+				detail: result.ErrorMessage ?? "Invalid username or password."
+			);
 		}
 
-		SetJWTToken(user);
-		return Ok(new LoginResponse(user));
-	}
-
-	private void SetJWTToken(User user)
-	{
-		var token = GenerateJwtToken(user);
-		Response.Cookies.Append("accessToken", token, new CookieOptions
+		// Set the JWT token in an HttpOnly cookie
+		Response.Cookies.Append("accessToken", result.Token, new CookieOptions
 		{
 			HttpOnly = true,
 			Secure = true,
 			SameSite = SameSiteMode.Lax,
-			Expires = DateTimeOffset.UtcNow.AddMinutes(30),
-			Path = "/",
+			Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+			Path = "/" // Cookie available for all paths
 		});
-	}
-	
-	private string GenerateJwtToken(User user)
-	{
-		var tokenHandler = new JwtSecurityTokenHandler();
-		var secret = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
-		var tokenDescriptor = new SecurityTokenDescriptor()
-		{
-			Subject = new ClaimsIdentity(new Claim[]
-			{
-				new Claim(ClaimTypes.Name, user.Id.ToString())
-			}),
-			Expires = DateTime.UtcNow.AddMinutes(30),
-			Issuer = _configuration["Jwt:Issuer"], // Set the Issuer
-			Audience = _configuration["Jwt:Audience"], // Set the Audience
-			SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature)
-		};
-		var token = tokenHandler.CreateToken(tokenDescriptor);
-		return tokenHandler.WriteToken(token);
+		_logger.LogInformation("User logged in successfully: {nickname} with email: {email}",
+			result.UserResponse.Nickname, result.UserResponse.Email);
+		return Ok(result.UserResponse);
 	}
 }
