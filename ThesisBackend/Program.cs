@@ -106,7 +106,7 @@ try // Added try-finally for robust Serilog flushing
     // Your existing Configure line for ConnetcionString. Ensure 'ConnetcionString' class is defined if used this way.
     // If it's a typo and not used for options, it could be removed. Otherwise, ensure the class exists.
     // For DbContext, GetConnectionString("DefaultConnection") is used directly below.
-    builder.Services.Configure<ConnetcionString>(builder.Configuration.GetSection("ConnectionStrings"));
+    builder.Services.Configure<ConnectionString>(builder.Configuration.GetSection("ConnectionStrings"));
 
     // Configure JwtSettings using the class you provided at the end of your previous snippet
     builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
