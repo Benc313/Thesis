@@ -8,9 +8,7 @@
       "applicationUrl": "http://localhost:5123",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "AWS_ACCESS_KEY_ID": "placeholder",
-        "AWS_SECRET_ACCESS_KEY": "placeholder",
-        "AWS_REGION": "placeholder"
+        "AWS_REGION": "eu-north-1"
       }
     },
     "https": {

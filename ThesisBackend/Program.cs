@@ -18,6 +18,8 @@ using ThesisBackend.Services.Authentication.Models;
 // If JwtSettings is in a specific models/options folder:
 // using ThesisBackend.Models.Configuration; // Example if you have JwtSettings class here
 using ThesisBackend.Services.Authentication.Validators; // For RegistrationRequestValidator
+using Serilog.Debugging; // Add this if not already there
+SelfLog.Enable(Console.Error); // Before ANY other Serilog code
 
 // --- Bootstrap Serilog for early logging (as you had) ---
 var configurationForBootstrap = new ConfigurationBuilder()
