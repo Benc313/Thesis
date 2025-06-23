@@ -23,7 +23,7 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required.")
             .NotNull().WithMessage("Password is required.")
-            .MinimumLength(6).WithMessage("Password must be at least 8 characters long.");
+            .MinimumLength(8).WithMessage("Password must be at least 8 characters long.");
     }
     
     private async Task<bool> BeValidEmailAsync(string email, CancellationToken cancellationToken)
