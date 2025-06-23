@@ -1,21 +1,19 @@
-using Xunit;
 using Moq;
 using FluentAssertions;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore; // For InMemory or mocking
-using Microsoft.Extensions.Options;   // For IOptions
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging; // For InMemory or mocking
 using ThesisBackend.Application.Authentication.Services;
 using ThesisBackend.Application.Authentication.Interfaces;
 using ThesisBackend.Domain.Messages;
 using ThesisBackend.Domain.Models;
 using ThesisBackend.Data;
 using ThesisBackend.Services.Authentication.Interfaces;
-using ThesisBackend.Services.Authentication.Models; // For JwtSettings (if ITokenGenerator depends on it directly)
 
 public class AuthServiceTests
 {
     private readonly Mock<IPasswordHasher> _mockPasswordHasher;
     private readonly Mock<ITokenGenerator> _mockTokenGenerator;
+    private readonly Mock<ILogger<AuthService>> _mockLogger; // Add this field
     private readonly dbContext _dbContext; // Use InMemory for testing
     private readonly AuthService _authService;
 
@@ -23,6 +21,7 @@ public class AuthServiceTests
     {
         _mockPasswordHasher = new Mock<IPasswordHasher>();
         _mockTokenGenerator = new Mock<ITokenGenerator>();
+        _mockLogger = new Mock<ILogger<AuthService>>(); // Initialize logger
 
         // Setup InMemory DbContext
         var options = new DbContextOptionsBuilder<dbContext>()
@@ -31,7 +30,7 @@ public class AuthServiceTests
             .Options;
         _dbContext = new dbContext(options);
         
-        _authService = new AuthService(_dbContext, _mockPasswordHasher.Object, _mockTokenGenerator.Object);
+        _authService = new AuthService(_dbContext, _mockPasswordHasher.Object, _mockTokenGenerator.Object, _mockLogger.Object);
     }
     
     [Fact]
