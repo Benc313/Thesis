@@ -18,7 +18,11 @@ using ThesisBackend.Services.Authentication.Models;
 // If JwtSettings is in a specific models/options folder:
 // using ThesisBackend.Models.Configuration; // Example if you have JwtSettings class here
 using ThesisBackend.Services.Authentication.Validators; // For RegistrationRequestValidator
-using Serilog.Debugging; // Add this if not already there
+using Serilog.Debugging;
+using ThesisBackend;
+using ThesisBackend.Application.UserService.Interfaces;
+using ThesisBackend.Services.UserService.Services;
+using ThesisBackend.Services.UserService.Validators; // Add this if not already there
 SelfLog.Enable(Console.Error); // Before ANY other Serilog code
 
 // --- Bootstrap Serilog for early logging (as you had) ---
@@ -95,6 +99,7 @@ try // Added try-finally for robust Serilog flushing
         .AddFluentValidation(config =>
         {
             config.RegisterValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
+            config.RegisterValidatorsFromAssemblyContaining<UserRequestValidator>();
             config.AutomaticValidationEnabled = false;
         });
 
@@ -106,7 +111,7 @@ try // Added try-finally for robust Serilog flushing
     // Your existing Configure line for ConnetcionString. Ensure 'ConnetcionString' class is defined if used this way.
     // If it's a typo and not used for options, it could be removed. Otherwise, ensure the class exists.
     // For DbContext, GetConnectionString("DefaultConnection") is used directly below.
-    builder.Services.Configure<ConnectionString>(builder.Configuration.GetSection("ConnectionStrings"));
+    builder.Services.Configure<ConnectionnString>(builder.Configuration.GetSection("ConnectionStrings"));
 
     // Configure JwtSettings using the class you provided at the end of your previous snippet
     builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
@@ -115,6 +120,7 @@ try // Added try-finally for robust Serilog flushing
     builder.Services.AddScoped<IAuthService, AuthService>();
     builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
     builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+    builder.Services.AddScoped<IUserService, UserSerivce>();
 
     builder.Services.AddCors(options =>
     {
