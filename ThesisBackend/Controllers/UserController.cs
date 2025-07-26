@@ -130,11 +130,11 @@ public class UserController : ControllerBase
 		var result = await _userService.GetUserRaces(userId);
 		if (!result.Success || result.SmallEventResponse == null || !result.SmallEventResponse.Any())
 		{
-			_logger.LogWarning("No meets found for user with ID {userId}: {error}", userId, result.ErrorMessage);
+			_logger.LogWarning("No races found for user with ID {userId}: {error}", userId, result.ErrorMessage);
 			return NotFound(new { message = "No events found for this user" });
 		}
 
-		_logger.LogInformation("Successfully retrieved {count} meets for user with ID {userId}",
+		_logger.LogInformation("Successfully retrieved {count} races for user with ID {userId}",
 			result.SmallEventResponse.Count, userId);
 		return Ok(result.SmallEventResponse.ToList());
 	}
