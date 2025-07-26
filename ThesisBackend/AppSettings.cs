@@ -1,6 +1,6 @@
 namespace ThesisBackend;
 
-public class ConnectionnString
+public class AppSettings
 {
     public string ConnectionString { get; set; }
 }

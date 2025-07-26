@@ -11,11 +11,11 @@ namespace ThesisBackend.Services.UserService.Services;
 public class UserSerivce : IUserService
 {
     private readonly dbContext _context;
-    private readonly ILogger<AuthService> _logger;
+    private readonly ILogger<UserSerivce> _logger;
 
     public UserSerivce(
         dbContext context,
-        ILogger<AuthService> logger)
+        ILogger<UserSerivce> logger)
     {
         _logger = logger;
         _context = context;

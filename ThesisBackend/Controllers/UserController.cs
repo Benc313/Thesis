@@ -12,19 +12,17 @@ namespace ThesisBackend.Controllers;
 public class UserController : ControllerBase
 {
 	private readonly IUserService _userService;
-	private readonly dbContext _context;
 
 	private readonly IValidator<UserRequest> _userRequestValidator;
 	
 	private readonly ILogger<UserController> _logger;
 	
-	public UserController(dbContext context, IUserService userService, 
+	public UserController(IUserService userService, 
 		IValidator<UserRequest> userRequestValidator, ILogger<UserController> logger)
 	{
 		_logger = logger;
 		_userService = userService;
 		_userRequestValidator = userRequestValidator;
-		_context = context;
 	}
 
 	//[Authorize]	//Uncomment this line to enable authorization
