@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions; // For RemoveAll
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging; // For RemoveAll
 using ThesisBackend.Data; // Namespace of your dbContext
 using ThesisBackend.Domain.Messages;
 
@@ -26,6 +27,11 @@ namespace ThesisBackend.Api.Tests.Authentication
                 // --- Set the environment to "Testing" ---
                 builder.UseEnvironment("Testing");
 
+                builder.ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders(); // This is the key line to prevent the error
+                });
+                
                 builder.ConfigureServices(services =>
                 {
                     services.RemoveAll(typeof(Microsoft.EntityFrameworkCore.Infrastructure.IDbContextOptionsExtension));
