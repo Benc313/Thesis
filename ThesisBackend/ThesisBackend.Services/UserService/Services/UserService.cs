@@ -99,6 +99,7 @@ public class UserService : IUserService
         }
         _logger.LogInformation("Successfully retrieved user races with ID: {userId}", userId);
         var events = await _context.Races
+            .Include(r => r.Users)
             .Where(m => m.Users.Any(u => u.Id == userId))
             .ToListAsync();
         if (events.Count == 0)
