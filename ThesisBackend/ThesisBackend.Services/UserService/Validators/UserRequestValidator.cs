@@ -27,11 +27,12 @@ public class UserRequestValidator : AbstractValidator<UserRequest>
         RuleFor(x => x.Nickname)
             .NotEmpty().WithMessage("Nickname is required.")
             .NotNull().WithMessage("Nickname is required.")
-            .MaximumLength(32).WithMessage("Nickname must not exceed 32 characters.");
+            .MaximumLength(32).WithMessage("Nickname must not exceed 32 characters.")
+            .MustAsync(BeValidNickAsync).WithMessage("This nickname is already in use.");
  
     }
 
-    private async Task<bool> BeValidNickAsync(string nickname)
+    private async Task<bool> BeValidNickAsync(string nickname, CancellationToken cancellationToken)
     {
         return await _context.Users.AnyAsync(user => user.Nickname == nickname);
     }
