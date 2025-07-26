@@ -103,7 +103,7 @@ public class UserService : IUserService
             .ToListAsync();
         if (events.Count == 0)
         {
-            _logger.LogWarning("No meets for user with ID {userId} found.", userId);
+            _logger.LogWarning("No races for user with ID {userId} found.", userId);
             return new UserEventOperationResult { Success = false, ErrorMessage = "Events not found for this user" };
         }
         _logger.LogInformation("Successfully retrieved races for user with ID: {userId}", userId);
