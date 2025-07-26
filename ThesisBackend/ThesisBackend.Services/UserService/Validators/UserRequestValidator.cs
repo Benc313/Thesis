@@ -40,6 +40,6 @@ public class UserRequestValidator : AbstractValidator<UserRequest>
     
     private async Task<bool> BeValidEmailAsync(string email, CancellationToken cancellationToken)
     {
-        return !await _context.Users.AnyAsync(u => u.Email == email);
+        return !await _context.Users.AnyAsync(u => u.Email == email && u.Id != UserRequest.UserId, cancellationToken);
     }
 }
