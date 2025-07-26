@@ -28,18 +28,17 @@ public class UserRequestValidator : AbstractValidator<UserRequest>
             .NotEmpty().WithMessage("Nickname is required.")
             .NotNull().WithMessage("Nickname is required.")
             .MaximumLength(32).WithMessage("Nickname must not exceed 32 characters.")
-            .MustAsync((request, nickname, cancellationToken) => BeValidNickAsync(request, nickname, cancellationToken))
-            .WithMessage("This nickname is already in use.");
+            .MustAsync(BeValidNickAsync).WithMessage("This nickname is already in use.");
  
     }
 
-    private async Task<bool> BeValidNickAsync(UserRequest request, string nickname, CancellationToken cancellationToken)
+    private async Task<bool> BeValidNickAsync(string nickname, CancellationToken cancellationToken)
     {
-        return !await _context.Users.AnyAsync(user => user.Nickname == nickname && user.Id != request.Id, cancellationToken);
+        return !await _context.Users.AnyAsync(user => user.Nickname == nickname, cancellationToken);
     }
     
     private async Task<bool> BeValidEmailAsync(string email, CancellationToken cancellationToken)
     {
-        return !await _context.Users.AnyAsync(u => u.Email == email && u.Id != UserRequest.UserId, cancellationToken);
+        return !await _context.Users.AnyAsync(u => u.Email == email, cancellationToken);
     }
 }
