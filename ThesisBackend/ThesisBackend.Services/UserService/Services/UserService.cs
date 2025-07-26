@@ -8,14 +8,14 @@ using ThesisBackend.Services.UserService.Models;
 
 namespace ThesisBackend.Services.UserService.Services;
 
-public class UserSerivce : IUserService
+public class UserService : IUserService
 {
     private readonly dbContext _context;
-    private readonly ILogger<UserSerivce> _logger;
+    private readonly ILogger<UserService> _logger;
 
-    public UserSerivce(
+    public UserService(
         dbContext context,
-        ILogger<UserSerivce> logger)
+        ILogger<UserService> logger)
     {
         _logger = logger;
         _context = context;

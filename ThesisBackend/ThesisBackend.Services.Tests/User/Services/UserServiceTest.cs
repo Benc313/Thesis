@@ -12,8 +12,8 @@ namespace ThesisBackend.Services.Tests.User.Services;
 
 public class UserServiceTest
 {
-    private readonly UserSerivce _userService;
-    private readonly Mock<ILogger<UserSerivce>> _mockLogger;
+    private readonly UserService.Services.UserService _userService;
+    private readonly Mock<ILogger<UserService.Services.UserService>> _mockLogger;
     private readonly dbContext _dbContext; // Use InMemory for testing
 
     public UserServiceTest()
@@ -25,8 +25,8 @@ public class UserServiceTest
             .Options;
         _dbContext = new dbContext(options);
 
-        _mockLogger = new Mock<ILogger<UserSerivce>>();
-        _userService = new UserSerivce(_dbContext, _mockLogger.Object);
+        _mockLogger = new Mock<ILogger<UserService.Services.UserService>>();
+        _userService = new UserService.Services.UserService(_dbContext, _mockLogger.Object);
     }
     
     [Fact]
