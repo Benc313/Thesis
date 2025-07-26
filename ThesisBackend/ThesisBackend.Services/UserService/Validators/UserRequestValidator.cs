@@ -34,7 +34,7 @@ public class UserRequestValidator : AbstractValidator<UserRequest>
 
     private async Task<bool> BeValidNickAsync(string nickname, CancellationToken cancellationToken)
     {
-        return await _context.Users.AnyAsync(user => user.Nickname == nickname);
+        return !await _context.Users.AnyAsync(user => user.Nickname == nickname);
     }
     
     private async Task<bool> BeValidEmailAsync(string email, CancellationToken cancellationToken)
