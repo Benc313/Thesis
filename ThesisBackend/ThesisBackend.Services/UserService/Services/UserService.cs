@@ -66,7 +66,7 @@ public class UserService : IUserService
     
     public async Task<UserEventOperationResult> GetUserMeets(int userId)
     {
-        _logger.LogInformation("Attempting to get meeting with ID: {userId}", userId);
+        _logger.LogInformation("Attempting to get meets for user with ID: {userId}", userId);
         var user = await _context.Users.FindAsync(userId);
         if (user == null)
         {
@@ -78,9 +78,9 @@ public class UserService : IUserService
             .Include(m => m.Users)
             .Where(m => m.Users.Any(u => u.Id == userId) || m.CreatorId == userId)
             .ToListAsync();
-        if (events == null)
+        if (events.Count == 0)
         {
-            _logger.LogWarning("No meeting with ID {userId} found.", userId);
+            _logger.LogWarning("No meets found for user with ID {userId} found.", userId);
             return new UserEventOperationResult { Success = false, ErrorMessage = "Events not found for this user" };
         }
         _logger.LogInformation("Successfully retrieved meets for user with ID: {userId}", userId);
@@ -101,9 +101,9 @@ public class UserService : IUserService
         var events = await _context.Races
             .Where(m => m.Users.Any(u => u.Id == userId))
             .ToListAsync();
-        if (events == null)
+        if (events.Count == 0)
         {
-            _logger.LogWarning("No meeting with ID {userId} found.", userId);
+            _logger.LogWarning("No meets for user with ID {userId} found.", userId);
             return new UserEventOperationResult { Success = false, ErrorMessage = "Events not found for this user" };
         }
         _logger.LogInformation("Successfully retrieved races for user with ID: {userId}", userId);
