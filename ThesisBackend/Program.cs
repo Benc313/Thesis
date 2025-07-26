@@ -91,7 +91,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 
-builder.Services.Configure<ConnetcionString>(builder.Configuration.GetSection("ConnectionStrings"));
+builder.Services.Configure<ConnectionString>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -247,10 +247,3 @@ app.Run();
 // Make Program class partial for WebApplicationFactory in integration tests
 public partial class Program { }
 
-namespace ThesisBackend.Services.Authentication.Models
-{
-    public class ConnetcionString
-    {
-        public string DefaultConnection { get; set; } = string.Empty;
-    }
-}
