@@ -11,7 +11,7 @@ namespace ThesisBackend.Controllers;
 public class MeetController : ControllerBase
 {
 	private readonly dbContext _context;
-
+	
 	public MeetController(dbContext context)
 	{
 		_context = context;

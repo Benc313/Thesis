@@ -11,7 +11,7 @@ public class CarRequestValidator : AbstractValidator<CarRequest>
     public CarRequestValidator(dbContext context)
     {
         _context = context;
-                    
+        
         RuleFor(x => x.Brand)
             .NotEmpty().WithMessage("Brand is required.")
             .NotNull().WithMessage("Brand is required.")
