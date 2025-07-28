@@ -12,6 +12,8 @@ public class CarResponse
 	public string Engine { get; set; }
 	public int HorsePower { get; set; }
 	
+	public CarResponse(){}
+	
 	public CarResponse(Car car)
 	{
 		Id = car.Id;
