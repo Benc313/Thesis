@@ -16,8 +16,10 @@ using ThesisBackend.Services.Authentication.Interfaces;
 using ThesisBackend.Services.Authentication.Models;
 using ThesisBackend.Services.Authentication.Validators;
 using Serilog.Debugging;
-using ThesisBackend;
 using ThesisBackend.Application.UserService.Interfaces;
+using ThesisBackend.Services.CarService.Interfaces;
+using ThesisBackend.Services.CarService.Services;
+using ThesisBackend.Services.CarService.Validators;
 using ThesisBackend.Services.UserService.Services;
 using ThesisBackend.Services.UserService.Validators;
 
@@ -83,6 +85,7 @@ builder.Services.AddControllers()
     {
         config.RegisterValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
         config.RegisterValidatorsFromAssemblyContaining<UserRequestValidator>();
+        config.RegisterValidatorsFromAssemblyContaining<CarRequestValidator>();
         config.AutomaticValidationEnabled = false;
     });
 
@@ -98,6 +101,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICarService, CarService>();
 
 builder.Services.AddCors(options =>
 {
