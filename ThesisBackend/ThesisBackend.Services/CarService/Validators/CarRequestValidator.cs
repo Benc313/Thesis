@@ -23,7 +23,7 @@ public class CarRequestValidator : AbstractValidator<CarRequest>
             .MaximumLength(32).WithMessage("Model must not exceed 32 characters.");
         
         RuleFor(x => x.Description)
-            .MaximumLength(320).WithMessage("Description must not exceed 64 characters.");
+            .MaximumLength(320).WithMessage("Description must not exceed 320 characters.");
 
         RuleFor(x => x.Engine)
             .NotEmpty().WithMessage("Engine is required.")
