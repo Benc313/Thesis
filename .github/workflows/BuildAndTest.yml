@@ -1,12 +1,12 @@
-name: Build and Test
+name: .NET CI/CD # Renamed for clarity, was 'Build and Test'
 
 on:
   pull_request:
     branches:
-      - main  # Replace with your default branch name (e.g., master)
+      - main # Replace with your default branch name (e.g., master)
 
 jobs:
-  build:
+  build-and-test: # Renamed job for clarity
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,30 +15,33 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'  # Adjust to your .NET version (e.g., 6.0.x, 7.0.x)
+          dotnet-version: '9.0.x' # Adjust to your .NET version (e.g., 6.0.x, 7.0.x)
 
       - name: Install dotnet-ef tool
-        run: dotnet tool install --global dotnet-ef --version 9.0.0  # Match your EF Core version
+        run: dotnet tool install --global dotnet-ef --version 9.0.0 # Match your EF Core version
         env:
-          DOTNET_CLI_TELEMETRY_OPTOUT: 1  # Optional: Disable telemetry for cleaner logs
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1 # Optional: Disable telemetry for cleaner logs
 
       - name: Add dotnet tools to PATH
-        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH  # Ensures dotnet-ef is available in the PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH # Ensures dotnet-ef is available in the PATH
 
       - name: Install dependencies
         run: dotnet restore
-        working-directory: ./ThesisBackend  # Path to your project folder
+        working-directory: ./ThesisBackend # Path to your project folder
 
-      - name: Update EF Core Tools
+      - name: Update EF Core Tools # This step is usually not necessary right after install, but harmless.
         run: dotnet tool update --global dotnet-ef
 
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal
-        working-directory: ./ThesisBackend
-
+      # --- CRITICAL CHANGE START ---
       - name: Build project
-        run: dotnet build --configuration Release --no-restore
-        working-directory: ./ThesisBackend  # Path to your project folder
+        run: dotnet build --configuration Debug --no-restore # Build first, use Debug config
+        working-directory: ./ThesisBackend # Path to your project folder
+
+      - name: Run tests
+        # Now the --no-build is fine because the project has been built
+        run: dotnet test --configuration Debug --no-build --verbosity normal # Use Debug config
+        working-directory: ./ThesisBackend
+      # --- CRITICAL CHANGE END ---
 
       - name: Verify dotnet-ef installation
-        run: dotnet ef --version  # Should print the EF Core version if installed correctly
+        run: dotnet ef --version # Should print the EF Core version if installed correctly
