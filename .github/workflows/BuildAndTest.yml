@@ -32,13 +32,13 @@ jobs:
       - name: Update EF Core Tools
         run: dotnet tool update --global dotnet-ef
 
-      - name: Build project
-        run: dotnet build --configuration Release --no-restore
-        working-directory: ./ThesisBackend  # Path to your project folder
-
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
         working-directory: ./ThesisBackend
+
+      - name: Build project
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./ThesisBackend  # Path to your project folder
 
       - name: Verify dotnet-ef installation
         run: dotnet ef --version  # Should print the EF Core version if installed correctly
