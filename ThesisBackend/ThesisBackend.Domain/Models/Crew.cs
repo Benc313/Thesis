@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ThesisBackend.Domain.Messages;
 
 namespace ThesisBackend.Domain.Models;
 
@@ -18,4 +19,20 @@ public class Crew
 
 	public List<UserCrew> UserCrews { get; set; } = new List<UserCrew>();
 	public List<Meet> Meets { get; set; } = new List<Meet>();
+	
+	public Crew(){}
+
+	public Crew(CrewRequest crewRequest)
+	{
+		Name = crewRequest.Name;
+		Description = crewRequest.Description;
+		ImageLocation = crewRequest.ImageLocation;
+	}
+
+	public void UpdateCrew(CrewRequest crewRequest)
+	{
+		Name = crewRequest.Name;
+		Description = crewRequest.Description;
+		ImageLocation = crewRequest.ImageLocation;
+	}
 }
