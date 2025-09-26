@@ -20,6 +20,9 @@ using ThesisBackend.Application.UserService.Interfaces;
 using ThesisBackend.Services.CarService.Interfaces;
 using ThesisBackend.Services.CarService.Services;
 using ThesisBackend.Services.CarService.Validators;
+using ThesisBackend.Services.MeetService.Interfaces;
+using ThesisBackend.Services.MeetService.Services;
+using ThesisBackend.Services.MeetService.Validators;
 using ThesisBackend.Services.UserService.Services;
 using ThesisBackend.Services.UserService.Validators;
 
@@ -86,6 +89,7 @@ builder.Services.AddControllers()
         config.RegisterValidatorsFromAssemblyContaining<RegistrationRequestValidator>();
         config.RegisterValidatorsFromAssemblyContaining<UserRequestValidator>();
         config.RegisterValidatorsFromAssemblyContaining<CarRequestValidator>();
+        config.RegisterValidatorsFromAssemblyContaining<MeetRequestValidator>();
         config.AutomaticValidationEnabled = false;
     });
 
@@ -102,6 +106,7 @@ builder.Services.AddScoped<ITokenGenerator, TokenGenerator>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IMeetService, MeetService>();
 
 builder.Services.AddCors(options =>
 {
