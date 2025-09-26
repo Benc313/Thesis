@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ThesisBackend.Domain.Messages;
 
 namespace ThesisBackend.Domain.Models;
 
@@ -39,4 +40,49 @@ public class Race
 	public DateTime Date { get; set; }
 
 	public List<User> Users { get; set; } = new List<User>(); // Many-to-many with User
+
+	[NotMapped]
+	public double Latitude => double.Parse(Coordinates.Split(',')[0]);
+	[NotMapped]
+	public double Longitude => double.Parse(Coordinates.Split(',')[1]);
+	
+	public Race()
+	{
+	}
+
+	public Race(RaceRequest raceRequest, User creator, Crew? crew)
+	{
+		Name = raceRequest.Name;
+		Description = raceRequest.Description;
+		Creator = creator;
+		CreatorId = creator.Id;
+		if (crew != null)
+		{
+			Crew = crew;
+			CrewId = crew.Id;
+		}
+
+		RaceType = raceRequest.RaceType;
+		Location = raceRequest.Location;
+		Coordinates = raceRequest.Coordinates;
+		Private = raceRequest.Private;
+		Date = raceRequest.Date;
+	}
+
+	public void UpdateRace(RaceRequest raceRequest, Crew? crew)
+	{
+		Name = raceRequest.Name;
+		Description = raceRequest.Description;
+		if (crew != null)
+		{
+			Crew = crew;
+			CrewId = crew.Id;
+		}
+		RaceType = raceRequest.RaceType;
+		Location = raceRequest.Location;
+		Coordinates = raceRequest.Coordinates;
+		Private = raceRequest.Private;
+		Date = raceRequest.Date;
+	}
+
 }

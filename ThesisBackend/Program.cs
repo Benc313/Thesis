@@ -17,6 +17,7 @@ using ThesisBackend.Services.Authentication.Models;
 using ThesisBackend.Services.Authentication.Validators;
 using Serilog.Debugging;
 using ThesisBackend.Application.UserService.Interfaces;
+using ThesisBackend.Domain.Messages;
 using ThesisBackend.Services.CarService.Interfaces;
 using ThesisBackend.Services.CarService.Services;
 using ThesisBackend.Services.CarService.Validators;
@@ -26,6 +27,9 @@ using ThesisBackend.Services.CrewService.Validators;
 using ThesisBackend.Services.MeetService.Interfaces;
 using ThesisBackend.Services.MeetService.Services;
 using ThesisBackend.Services.MeetService.Validators;
+using ThesisBackend.Services.RaceService.Interfaces;
+using ThesisBackend.Services.RaceService.Services;
+using ThesisBackend.Services.RaceService.Validators;
 using ThesisBackend.Services.UserService.Services;
 using ThesisBackend.Services.UserService.Validators;
 
@@ -94,6 +98,7 @@ builder.Services.AddControllers()
         config.RegisterValidatorsFromAssemblyContaining<CarRequestValidator>();
         config.RegisterValidatorsFromAssemblyContaining<MeetRequestValidator>();
         config.RegisterValidatorsFromAssemblyContaining<CrewRequestValidator>();
+        config.RegisterValidatorsFromAssemblyContaining<RaceValidator>();
         config.AutomaticValidationEnabled = false;
     });
 
@@ -112,6 +117,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IMeetService, MeetService>();
 builder.Services.AddScoped<ICrewService, CrewService>();
+builder.Services.AddScoped<IRaceService, RaceService>();
 
 builder.Services.AddCors(options =>
 {
