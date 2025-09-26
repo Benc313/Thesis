@@ -57,7 +57,7 @@ public class MeetService : IMeetService
         var crew = meetRequest.CrewId.HasValue ? await _context.Crews.FindAsync(meetRequest.CrewId.Value) : null;
         if (meetRequest.CrewId.HasValue && crew == null)
         {
-             _logger.LogWarning("Crew not found with ID: {CrewId}", meetRequest.CrewId);
+            _logger.LogWarning("Crew not found with ID: {CrewId}", meetRequest.CrewId);
             return new MeetOperationResult { Success = false, ErrorMessage = "Crew not found" };
         }
 

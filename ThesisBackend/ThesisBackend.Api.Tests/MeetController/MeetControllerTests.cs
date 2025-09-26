@@ -90,7 +90,7 @@ public class MeetControllerTests : IClassFixture<WebApplicationFactory<Program>>
             Location = "Location",
             Description = "Description",
             Coordinates = "47.4979,19.0402",
-            Date = DateTime.UtcNow.AddHours(25), // JAVÍTÁS
+            Date = DateTime.UtcNow.AddHours(25),
             Tags = new List<MeetTags> { MeetTags.Show }
         };
         var addResponse = await _client.PostAsJsonAsync($"/api/v1/Meet/addMeet/{user.Id}", meetRequest);
@@ -118,7 +118,7 @@ public class MeetControllerTests : IClassFixture<WebApplicationFactory<Program>>
             Description = "Description",
             Location = "Location",
             Coordinates = "47.4979,19.0402",
-            Date = DateTime.UtcNow.AddHours(25), // JAVÍTÁS
+            Date = DateTime.UtcNow.AddHours(25),
             Tags = new List<MeetTags> { MeetTags.Show }
         };
         var addResponse = await _client.PostAsJsonAsync($"/api/v1/Meet/addMeet/{user.Id}", meetRequest);
