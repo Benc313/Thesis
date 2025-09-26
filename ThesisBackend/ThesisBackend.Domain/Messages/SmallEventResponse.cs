@@ -26,4 +26,8 @@ public class SmallEventResponse
 		Private = race.Private;
 		IsMeet = false;
 	}
+
+	public SmallEventResponse()
+	{
+	}
 }

@@ -138,20 +138,27 @@ public class MeetService : IMeetService
     public async Task<AllMeetsOperationResult> GetFilteredMeetsAsync(LocationQuery query)
     {
         _logger.LogInformation("Retrieving filtered meets with query: {@Query}", query);
-        var meets = await _context.Meets.ToListAsync();
 
-        var filteredMeets = meets
+        var queryable = _context.Meets.AsQueryable();
+
+        queryable = queryable.Where(m => m.Date >= DateTime.Today);
+        if (query.Tags.Any())
+        {
+            var meetTags = query.Tags.Select(t => Enum.Parse<MeetTags>(t, true)).ToList();
+            queryable = queryable.Where(m => m.Tags.Any(tag => meetTags.Contains(tag)));
+        }
+
+        var potentialMeets = await queryable.Select(m => new { m.Id, m.Name, m.Date, m.Private, m.Latitude, m.Longitude }).ToListAsync();
+
+        var filteredMeets = potentialMeets
             .Where(m =>
-                CalculateDistance(m.Latitude, m.Longitude, query.Latitude, query.Longitude) <= query.DistanceInKm &&
-                (query.Tags.Count == 0 || m.Tags.Any(t => query.Tags.Contains(t.ToString()))) &&
-                m.Date >= DateTime.Today
+                CalculateDistance(m.Latitude, m.Longitude, query.Latitude, query.Longitude) <= query.DistanceInKm
             )
-            .Select(meet => new SmallEventResponse(meet))
+            .Select(m => new SmallEventResponse {Id = m.Id, Name = m.Name, Date = m.Date, Private = m.Private, IsMeet = true })
             .ToList();
 
         return new AllMeetsOperationResult { Success = true, Meets = filteredMeets };
     }
-
     private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
     {
         const double R = 6371; // Earth's radius in kilometers
