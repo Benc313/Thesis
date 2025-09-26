@@ -96,6 +96,10 @@ public class RaceService : IRaceService
         if (race == null) return new RaceOperationResult { Success = false, ErrorMessage = "Race not found" };
         if (user == null) return new RaceOperationResult { Success = false, ErrorMessage = "User not found" };
 
+        if (race.Users.Any(u => u.Id == userId))
+        {
+            return new RaceOperationResult { Success = false, ErrorMessage = "User already joined this race" };
+        }
         race.Users.Add(user);
         await _context.SaveChangesAsync();
         return new RaceOperationResult { Success = true };
