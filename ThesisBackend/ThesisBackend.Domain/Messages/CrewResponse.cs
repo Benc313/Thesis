@@ -10,6 +10,9 @@ public class CrewResponse
     public string ImageLocation { get; set; }
     public List<UserResponse> Users { get; set; } = new();
 
+    
+    public CrewResponse() { }
+
     public CrewResponse(Crew crew)
     {
         Id = crew.Id;
