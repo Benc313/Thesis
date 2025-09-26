@@ -93,10 +93,8 @@ public class CrewService : ICrewService
             return new CrewOperationResult { Success = false, ErrorMessage = "Crew not found." };
         }
 
-        crew.Name = crewRequest.Name;
-        crew.Description = crewRequest.Description;
-        crew.ImageLocation = crewRequest.ImageLocation;
-
+        crew.UpdateCrew(crewRequest);
+        _context.Crews.Update(crew);
         await _context.SaveChangesAsync();
         _logger.LogInformation("Crew updated successfully: {CrewId}", crewId);
         return new CrewOperationResult { Success = true, Crew = new CrewResponse(crew) };

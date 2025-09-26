@@ -28,4 +28,11 @@ public class Crew
 		Description = crewRequest.Description;
 		ImageLocation = crewRequest.ImageLocation;
 	}
+
+	public void UpdateCrew(CrewRequest crewRequest)
+	{
+		Name = crewRequest.Name;
+		Description = crewRequest.Description;
+		ImageLocation = crewRequest.ImageLocation;
+	}
 }
