@@ -16,6 +16,8 @@ public class MeetResponse
 	public List<MeetTags> Tags { get; set; } = new List<MeetTags>();
 	public List<UserResponse> Users { get; set; } = new List<UserResponse>();
 	
+	public MeetResponse(){}
+	
 	public MeetResponse(Meet meet)
 	{
 		Id = meet.Id;
