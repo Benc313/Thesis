@@ -66,7 +66,7 @@ public class RaceService : IRaceService
         Crew crew = null;
         if (raceRequest.CrewId != null)
         {
-            crew = _context.Crews.FirstOrDefault(c => c.Id == raceRequest.CrewId);
+            crew = await _context.Crews.FirstOrDefaultAsync(c => c.Id == raceRequest.CrewId);
         }
 
         race.UpdateRace(raceRequest, crew);
