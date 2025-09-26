@@ -141,7 +141,7 @@ public class MeetService : IMeetService
 
         var queryable = _context.Meets.AsQueryable();
 
-        queryable = queryable.Where(m => m.Date >= DateTime.Today);
+        queryable = queryable.Where(m => m.Date >= DateTime.UtcNow.Date);
         if (query.Tags.Any())
         {
             var meetTags = query.Tags.Select(t => Enum.Parse<MeetTags>(t, true)).ToList();
