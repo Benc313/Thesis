@@ -19,5 +19,12 @@ public class CrewResponse
         Name = crew.Name;
         Description = crew.Description;
         ImageLocation = crew.ImageLocation;
+        if (crew.UserCrews != null)
+        {
+            Users = crew.UserCrews
+                .Where(uc => uc.User != null)
+                .Select(uc => new UserResponse(uc.User))
+                .ToList();
+        }
     }
 }

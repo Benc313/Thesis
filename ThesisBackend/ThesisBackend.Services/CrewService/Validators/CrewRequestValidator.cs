@@ -13,5 +13,9 @@ public class CrewRequestValidator : AbstractValidator<CrewRequest>
 
         RuleFor(x => x.Description)
             .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
+
+        RuleFor(x => x.ImageLocation)
+            .NotEmpty().WithMessage("Image location is required.")
+            .NotNull().WithMessage("Image can't be null");
     }
 }
