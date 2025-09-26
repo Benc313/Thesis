@@ -1,8 +1,10 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThesisBackend.Data;
 using ThesisBackend.Domain.Messages;
 using ThesisBackend.Domain.Models;
+using ThesisBackend.Services.MeetService.Interfaces;
 
 namespace ThesisBackend.Controllers;
 
@@ -10,170 +12,83 @@ namespace ThesisBackend.Controllers;
 [ApiController]
 public class MeetController : ControllerBase
 {
-	private readonly dbContext _context;
-	
-	public MeetController(dbContext context)
+	private readonly IMeetService _meetService;
+	private readonly IValidator<MeetRequest> _meetRequestValidator;
+	private readonly ILogger<MeetController> _logger;
+
+	public MeetController(IMeetService meetService, IValidator<MeetRequest> meetRequestValidator, ILogger<MeetController> logger)
 	{
-		_context = context;
+		_meetService = meetService;
+		_meetRequestValidator = meetRequestValidator;
+		_logger = logger;
 	}
+
 	
-	//[Authorize]	//Uncomment this line to enable authorization
 	[HttpPost("addMeet/{userId}")]
-	public async Task<ActionResult<MeetResponse>> AddMeet(MeetRequest meetRequest, int userId)
-	{
-		Console.WriteLine(meetRequest.Name);
-		//Here comes the validation later on for the validation of the request
-		var user = await _context.Users.FindAsync(userId);
-		if (user == null)
-		{
-			return NotFound(new { message = "User not found" });
-		}
-		var crew = await _context.Crews.FindAsync(meetRequest.CrewId);
-		var newMeet = new Meet(meetRequest, user, crew);
-		_context.Meets.Add(newMeet);
-		await _context.SaveChangesAsync();
-		return Ok(new MeetResponse(newMeet));
-	}
-	
-	[HttpPut("joinMeet/{meetId}/{userId}")]
-	public async Task<ActionResult> JoinMeet(int meetId, int userId)
-	{
-		var meet = await _context.Meets.FindAsync(meetId);
-		if (meet == null)
-		{
-			return NotFound(new { message = "Meet not found" });
-		}
-		var user = await _context.Users.FindAsync(userId);
-		if (user == null)
-		{
-			return NotFound(new { message = "User not found" });
-		}
-		if (meet.Users.Contains(user))
-		{
-			return BadRequest(new { message = "User already joined the meet" });
-		}
-		
-		meet.Users.Add(user);
-		await _context.SaveChangesAsync();
-		
-		return Ok(new { message = "User joined the meet successfully" });
-	}
-	
-	//[Authorize]	//Uncomment this line to enable authorization
-	[HttpPut("updateMeet/{meetId}")]
-	public async Task<ActionResult<MeetResponse>> EditMeet(MeetRequest meetRequest, int meetId)
-	{
-		//Here comes the validation later on for the validation of the request
-		var meet = await _context.Meets.FindAsync(meetId);
-		if (meet == null)
-		{
-			return NotFound(new { message = "Meet not found" });
-		}
-		var crew = await _context.Crews.FindAsync(meetRequest.CrewId);
-		if (crew == null)
-		{
-			return NotFound(new { message = "Crew not found" });
-		}
-		meet.UpdateMeet(meetRequest, crew);
-		await _context.SaveChangesAsync();
-		return Ok(new MeetResponse(meet));
-	}
-	
-	//Authorize]	//Uncomment this line to enable authorization
-	[HttpGet("getMeet/{meetId}")]
-	public async Task<ActionResult<MeetResponse>> GetMeet(int meetId)
-	{
-		var meet = _context.Meets.Include(m => m.Users).FirstOrDefault(m => m.Id == meetId);
-		if (meet == null)
-		{
-			return NotFound(new { message = "Meet not found" });
-		}
-		var users = meet.Users.ToList();
-		return Ok(new MeetResponse(meet, users));
-	}
+    public async Task<ActionResult<MeetResponse>> AddMeet(MeetRequest meetRequest, int userId)
+    {
+        _logger.LogInformation("AddMeet request for user {UserId}", userId);
+        var validationResult = await _meetRequestValidator.ValidateAsync(meetRequest);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
 
-	//[Authorize]	//Uncomment this line to enable authorization
-	[HttpDelete("deleteMeet/{meetId}")]
-	public async Task<ActionResult> DeleteMeet(int meetId)
-	{
-		var meet = await _context.Meets.FindAsync(meetId);
-		if (meet == null)
-		{
-			return NotFound(new { message = "Meet not found" });
-		}
-		_context.Meets.Remove(meet);
-		await _context.SaveChangesAsync();
-		return Ok(new { message = "Meet deleted successfully" });
-	}
+        var result = await _meetService.AddMeetAsync(meetRequest, userId);
+        return result.Success ? Ok(result.MeetResponse) : Problem(result.ErrorMessage);
+    }
 
-	[HttpGet("getMeets")]
-	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeets()
-	{
-		var meets = await _context.Meets
-			.ToListAsync();
-		return Ok(meets.Select(meet => new SmallEventResponse(meet)).ToList());	
-	}
+    [HttpPut("joinMeet/{meetId}/{userId}")]
+    public async Task<IActionResult> JoinMeet(int meetId, int userId)
+    {
+        _logger.LogInformation("JoinMeet request for user {UserId} and meet {MeetId}", userId, meetId);
+        var result = await _meetService.JoinMeetAsync(meetId, userId);
+        return result.Success ? Ok() : Problem(result.ErrorMessage);
+    }
 
-	//[Authorize]	//Uncomment this line to enable authorization
-	[HttpGet("getMeetsF")]
-	public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeetsWithFilter([FromQuery] LocationQuery query)
-	{
-		// Input validation
-		if (query.Latitude < -90 || query.Latitude > 90 ||
-		    query.Longitude < -180 || query.Longitude > 180 ||
-		    query.DistanceInKm <= 0)
-		{
-			return BadRequest(new { message = "Invalid location parameters" });
-		}
+    [HttpPut("updateMeet/{meetId}")]
+    public async Task<ActionResult<MeetResponse>> UpdateMeet(MeetRequest meetRequest, int meetId)
+    {
+        _logger.LogInformation("UpdateMeet request for meet {MeetId}", meetId);
+        var validationResult = await _meetRequestValidator.ValidateAsync(meetRequest);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
+        
+        var result = await _meetService.UpdateMeetAsync(meetRequest, meetId);
+        return result.Success ? Ok(result.MeetResponse) : Problem(result.ErrorMessage);
+    }
 
-		// Fetch meets without Include since Tags is not a navigation property
-		var meets = await _context.Meets
-			.ToListAsync();
+    [HttpGet("getMeet/{meetId}")]
+    public async Task<ActionResult<MeetResponse>> GetMeet(int meetId)
+    {
+        _logger.LogInformation("GetMeet request for meet {MeetId}", meetId);
+        var result = await _meetService.GetMeetAsync(meetId);
+        return result.Success ? Ok(result.MeetResponse) : NotFound(result.ErrorMessage);
+    }
 
-		// Filter in memory using the NotMapped properties and Tags
-		var filteredMeets = meets
-			.Where(m => 
-			{
-				try
-				{
-					return CalculateDistance(m.Latitude, m.Longitude, 
-						       query.Latitude, query.Longitude) <= query.DistanceInKm &&
-					       (query.Tags.Count == 0 || query.Tags.Count == 1 || m.Tags.Any(t => query.Tags.Contains(t.ToString())) && m.Date >= DateTime.Today);
-				}
-				catch
-				{
-					return false; // Skip if coordinates can't be parsed
-				}
-			})
-			.ToList();
+    [HttpDelete("deleteMeet/{meetId}")]
+    public async Task<IActionResult> DeleteMeet(int meetId)
+    {
+        _logger.LogInformation("DeleteMeet request for meet {MeetId}", meetId);
+        var result = await _meetService.DeleteMeetAsync(meetId);
+        return result.Success ? Ok() : NotFound(result.ErrorMessage);
+    }
 
-		if (filteredMeets == null)
-		{
-			return NotFound(new { message = "No meets found" });
-		}
+    [HttpGet("getMeets")]
+    public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeets()
+    {
+        _logger.LogInformation("GetAllMeets request");
+        var result = await _meetService.GetAllMeetsAsync();
+        return result.Success ? Ok(result.Meets) : NotFound(result.ErrorMessage);
+    }
 
-		return Ok(filteredMeets.Select(meet => new SmallEventResponse(meet)).ToList());
-	}
-
-	private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
-	{
-	    const double R = 6371; // Earth's radius in kilometers
-	    
-	    var dLat = ToRadians(lat2 - lat1);
-	    var dLon = ToRadians(lon2 - lon1);
-	    
-	    var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-	            Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
-	            Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-	    
-	    var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-	    return R * c;
-	}
-
-	private double ToRadians(double degrees)
-	{
-	    return degrees * Math.PI / 180;
-	}
-
-	
+    [HttpGet("getMeetsF")]
+    public async Task<ActionResult<List<SmallEventResponse>>> GetAllMeetsWithFilter([FromQuery] LocationQuery query)
+    {
+        _logger.LogInformation("GetAllMeetsWithFilter request with query: {@Query}", query);
+        var result = await _meetService.GetFilteredMeetsAsync(query);
+        return result.Success ? Ok(result.Meets) : NotFound(result.ErrorMessage);
+    }
 }
