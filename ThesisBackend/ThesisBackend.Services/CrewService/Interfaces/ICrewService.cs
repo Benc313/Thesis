@@ -10,4 +10,7 @@ public interface ICrewService
     Task<CrewOperationResult> GetCrewAsync(int crewId);
     Task<AllCrewsOperationResult> GetAllCrewsAsync();
     Task<CrewOperationResult> AddUserToCrewAsync(UserCrewRequest request, int crewId);
+    Task<CrewOperationResult> RemoveUserFromCrewAsync(int crewId, int userId);
+    Task<CrewOperationResult> DeleteCrewAsync(int crewId);
+
 }

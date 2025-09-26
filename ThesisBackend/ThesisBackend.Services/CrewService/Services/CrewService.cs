@@ -58,7 +58,6 @@ public class CrewService : ICrewService
         return new CrewOperationResult { Success = true };
     }
     
-    
     public async Task<CrewOperationResult> RemoveUserFromCrewAsync(int crewId, int userId)
     {
         var userCrew = await _context.UserCrews
