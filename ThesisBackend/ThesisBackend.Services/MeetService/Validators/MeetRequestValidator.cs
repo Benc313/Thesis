@@ -22,7 +22,7 @@ public class MeetRequestValidator : AbstractValidator<MeetRequest>
 
         RuleFor(x => x.Date)
             .NotEmpty().WithMessage("Date is required.")
-            .GreaterThan(DateTime.Now).WithMessage("Date must be in the future.");
+            .GreaterThan(DateTime.UtcNow).WithMessage("Date must be in the future.");
 
         RuleFor(x => x.Tags)
             .NotEmpty().WithMessage("At least one tag is required.");
