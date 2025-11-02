@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using ThesisBackend.Domain.Messages;
+using ThesisBackend.Domain.Models;
 using ThesisBackend.Services.CrewService.Interfaces;
 
 namespace ThesisBackend.Controllers;
@@ -77,5 +78,19 @@ public class CrewController : ControllerBase
     {
         var result = await _crewService.DeleteCrewAsync(id);
         return result.Success ? Ok() : NotFound(new { message = result.ErrorMessage });
+    }
+    
+    [HttpGet("{crewId}/events")]
+    public async Task<IActionResult> GetEventsForCrew(int crewId)
+    {
+        var result = await _crewService.GetEventsForCrewAsync(crewId);
+        return result.Success ? Ok(result.Events) : NotFound(new { message = result.ErrorMessage });
+    }
+    
+    [HttpPut("{crewId}/users/{userId}")]
+    public async Task<IActionResult> UpdateUserRankInCrew(int crewId, int userId, Rank rank)
+    {
+        var result = await _crewService.UpdateUserRankAsync(crewId, userId, rank);
+        return result.Success ? Ok() : BadRequest(new { message = result.ErrorMessage });
     }
 }

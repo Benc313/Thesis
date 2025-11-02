@@ -15,3 +15,10 @@ public class AllCrewsOperationResult
     public string? ErrorMessage { get; set; }
     public List<CrewResponse>? Crews { get; set; }
 }
+
+public class EventsForCrewOperationResult
+{
+    public bool Success { get; set; }
+    public string? ErrorMessage { get; set; }
+    public List<SmallEventResponse>? Events { get; set; }
+}

@@ -126,4 +126,40 @@ public class CrewService : ICrewService
 
         return new AllCrewsOperationResult { Success = true, Crews = crews };
     }
+
+    public async Task<EventsForCrewOperationResult> GetEventsForCrewAsync(int crewId)
+    {
+        if(_context.Crews.Any(c => c.Id == crewId) == false)
+        {
+            return new EventsForCrewOperationResult { Success = false, ErrorMessage = "Crew not found." };
+        }
+        var events = await _context.Races
+            .Where(e => e.CrewId == crewId)
+            .Select(e => new SmallEventResponse(e))
+            .ToListAsync();
+        events.AddRange(
+            _context.Races.
+            Where(e => e.CrewId == crewId).
+            Select(e => new SmallEventResponse(e)));
+        return new EventsForCrewOperationResult { Success = true, Events = events };
+    }
+    
+    public async Task<CrewOperationResult> UpdateUserRankAsync(int crewId, int userId, Rank rank)
+    {
+        var userCrew = await _context.UserCrews
+            .FirstOrDefaultAsync(uc => uc.CrewId == crewId && uc.UserId == userId);
+
+        if (userCrew == null)
+        {
+            _logger.LogWarning("UserCrew not found for update. CrewId: {CrewId}, UserId: {UserId}", crewId, userId);
+            return new CrewOperationResult { Success = false, ErrorMessage = "User is not in this crew." };
+        }
+
+        userCrew.Rank = rank;
+        _context.UserCrews.Update(userCrew);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("User {UserId} rank updated in Crew {CrewId} to {Rank}", userId, crewId, rank);
+        return new CrewOperationResult { Success = true };
+    }
 }
