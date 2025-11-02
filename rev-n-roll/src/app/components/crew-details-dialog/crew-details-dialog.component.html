@@ -1,0 +1,109 @@
+<div class="dialog-container">
+    <button mat-icon-button class="close-button" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  
+    <div class="content-wrapper" *ngIf="!isLoading && crew; else loading">
+      
+      <div class="left-section">
+        <div class="flex items-center gap-4 mb-6 pb-2 border-b border-gray-700">
+          <img 
+            [src]="crew.imageLocation || 'assets/default-crew.png'" 
+            alt="{{ crew.name }} logo" 
+            class="w-20 h-20 object-cover rounded-full border-4 border-purple-400"
+            style="min-width: 64px;"
+          >
+          <div>
+            <h2 class="meet-title my-0">{{ crew.name }}</h2>
+            <p class="text-gray-400 italic">Total Members: {{ crew.users.length }}</p>
+          </div>
+        </div>
+
+        <div class="meet-details mb-6">
+          <p class="text-gray-200"><strong>Description:</strong> {{ crew.description || 'No description provided' }}</p>
+          
+          <div class="my-4">
+              <button
+                  mat-raised-button
+                  color="primary"
+                  class="join-button"
+                  [disabled]="currentUserId === 0"
+                  (click)="onToggleMembership()">
+                  <mat-icon>{{ isMember ? 'logout' : 'group_add' }}</mat-icon>
+                  {{ isMember ? 'Leave Crew' : 'Join Crew' }}
+              </button>
+          </div>
+
+        </div>
+
+        <mat-tab-group animationDuration="300ms" class="mt-8">
+            <mat-tab label="Members ({{ crew.users.length }})">
+                <div class="p-2" *ngIf="isLeader">
+                    <h4 class="text-lg font-semibold text-purple-400 mb-3">Add Member</h4>
+                    <div class="flex gap-2 mb-4">
+                        <mat-form-field appearance="fill" class="flex-1">
+                            <mat-label>User ID to Invite</mat-label>
+                            <input matInput [(ngModel)]="newMemberId" placeholder="Enter User ID (Number)">
+                        </mat-form-field>
+                        <button mat-raised-button color="accent" (click)="onAddMember()" [disabled]="!newMemberId">
+                            Invite
+                        </button>
+                    </div>
+                </div>
+
+                <div class="users-list p-2">
+                    <div *ngFor="let user of crew.users" class="user-card flex justify-between items-center">
+                        <div>
+                            <p class="user-name">
+                                {{ user.nickname }} 
+                                <span *ngIf="user.id === currentUserId.toString()" class="text-green-400 text-sm">(You)</span>
+                            </p>
+                            <span class="text-sm text-gray-500">Rank: {{ getRankName(user.rank) }}</span> 
+                        </div>
+
+                        <div class="flex gap-2 items-center" *ngIf="isLeader && user.id !== currentUserId.toString()">
+                            <mat-form-field appearance="fill" class="w-32 text-sm">
+                                <mat-select 
+                                    [value]="user.rank" 
+                                    (selectionChange)="onUpdateRank(user.id, $event)">
+                                    <mat-option *ngFor="let rankName of ranks; let i = index" [value]="i">
+                                        {{ rankName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <button 
+                                mat-icon-button 
+                                class="text-red-400 hover:text-red-600" 
+                                (click)="onRemoveMember(user.id)">
+                                <mat-icon>person_remove</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <p *ngIf="!crew.users.length" class="no-users">No members yet.</p>
+                </div>
+            </mat-tab>
+            
+            <mat-tab label="Events ({{ events.length }})">
+                <div class="events-list p-2">
+                    <div *ngIf="events.length === 0" class="no-users my-4">
+                      <p>No upcoming Meets or Races found for this crew.</p>
+                    </div>
+                    <div *ngFor="let event of events" class="user-card mb-2">
+                        <p class="user-name">{{ event.name }}</p>
+                        <p class="text-sm text-gray-500">{{ event.date | date:'medium' }}</p>
+                        <p class="text-sm text-purple-400">{{ event.isMeet ? 'Meet' : 'Race' }}</p>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+        
+      </div>
+    </div>
+  
+    <ng-template #loading>
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    </ng-template>
+  </div>

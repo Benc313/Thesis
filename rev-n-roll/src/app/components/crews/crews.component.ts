@@ -1,4 +1,4 @@
-// rev-n-roll/src/app/components/crews/crews.component.ts - MODIFIED
+// rev-n-roll/src/app/components/crews/crews.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9,11 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CrewService } from '../../services/crew.service';
 import { Crew, CrewRequest } from '../../models/crew';
 import { AddCrewDialogComponent } from '../add-crew-dialog/add-crew-dialog.component'; 
+import { CrewDetailsDialogComponent } from '../crew-details-dialog/crew-details-dialog.component'; // <--- NEW IMPORT
 import { AuthService } from '../../services/auth.service';
-import { MatTooltipModule } from '@angular/material/tooltip'; // Added for tooltips
+
 
 @Component({
   selector: 'app-crews',
@@ -65,6 +67,17 @@ export class CrewsComponent implements OnInit {
       }
     });
   }
+  
+  viewCrewDetails(crewId: number): void {
+    this.dialog.open(CrewDetailsDialogComponent, {
+      width: '90%',
+      height: '90%',
+      maxWidth: '800px',
+      maxHeight: '800px',
+      panelClass: 'custom-dialog-container',
+      data: { crewId }
+    });
+  }
 
   onCreateCrew(): void {
     if (!this.userId) {
@@ -99,7 +112,6 @@ export class CrewsComponent implements OnInit {
             this.snackBar.open(message, 'Close', { panelClass: ['error-snackbar'], duration: 5000 });
           }
         }).add(() => {
-          // Ensure submitting is reset regardless of success/failure
           if (dialogRef.componentInstance) dialogRef.componentInstance.isSubmitting = false;
         });
       }
@@ -107,7 +119,6 @@ export class CrewsComponent implements OnInit {
   }
   
   onEditCrew(crew: Crew): void {
-    // Only allow editing if the current user is part of the crew
     if (!this.isMember(crew)) {
       this.snackBar.open('You are not a member of this crew.', 'Close', { panelClass: ['error-snackbar'] });
       return;
@@ -169,7 +180,6 @@ export class CrewsComponent implements OnInit {
     });
   }
 
-  // Helper to check if the current user is a member of the crew (for UI controls)
   isMember(crew: Crew): boolean {
     return crew.users.some(user => parseInt(user.id, 10) === this.userId);
   }

@@ -26,7 +26,11 @@
       <p class="text-lg text-gray-300">No crews have been created yet. Be the first!</p>
     </div>
 
-    <mat-card *ngFor="let crew of crews" class="crew-card bg-gray-800 p-4 rounded-lg shadow-lg relative">
+    <mat-card 
+      *ngFor="let crew of crews" 
+      class="crew-card bg-gray-800 p-4 rounded-lg shadow-lg relative cursor-pointer" 
+      (click)="viewCrewDetails(crew.id)"
+    >
       <div class="flex items-start gap-4">
         <img 
           [src]="crew.imageLocation || 'assets/default-crew.png'" 
@@ -52,7 +56,7 @@
             mat-icon-button
             class="text-purple-400 hover:text-purple-600"
             [disabled]="!isMember(crew)"
-            [matTooltip]="isMember(crew) ? 'Edit Crew' : 'Only members can edit'"
+            matTooltip="Edit Crew"
             (click)="onEditCrew(crew); $event.stopPropagation()"
           >
             <mat-icon>edit</mat-icon>
@@ -62,7 +66,7 @@
             mat-icon-button
             class="text-red-400 hover:text-red-600"
             [disabled]="!isMember(crew)"
-            [matTooltip]="isMember(crew) ? 'Delete Crew' : 'Only members can delete'"
+            matTooltip="Delete Crew"
             (click)="onDeleteCrew(crew.id, $event)"
           >
             <mat-icon>delete</mat-icon>
@@ -71,8 +75,8 @@
           <button
             mat-icon-button
             class="text-blue-400 hover:text-blue-600"
-            [matTooltip]="isMember(crew) ? 'View Crew Details' : 'Join Crew (Not yet implemented)'"
-            [disabled]="isMember(crew)"
+            matTooltip="View Crew Details"
+            (click)="viewCrewDetails(crew.id); $event.stopPropagation()"
           >
             <mat-icon>visibility</mat-icon>
           </button>
