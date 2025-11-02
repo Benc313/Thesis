@@ -1,0 +1,47 @@
+<div class="dialog-container">
+  <mat-icon class="crew-icon">group</mat-icon>
+  <h2 class="dialog-title">{{ isEditMode ? 'Edit Crew' : 'Create a New Crew' }}</h2>
+  <form [formGroup]="crewForm" (ngSubmit)="onSubmit()" class="form-content">
+    
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Crew Name</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="crewForm.get('name')?.hasError('required')">
+        Crew name is required
+      </mat-error>
+      <mat-error *ngIf="crewForm.get('name')?.hasError('minlength')">
+        Crew name must be at least 3 characters
+      </mat-error>
+      <mat-error *ngIf="crewForm.get('name')?.hasError('maxlength')">
+        Crew name cannot exceed 32 characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      <mat-error *ngIf="crewForm.get('description')?.hasError('maxlength')">
+        Description cannot exceed 500 characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <mat-label>Image URL / Location</mat-label>
+      <input matInput formControlName="imageLocation" required>
+      <mat-error *ngIf="crewForm.get('imageLocation')?.hasError('required')">
+        Image location is required
+      </mat-error>
+      <mat-error *ngIf="crewForm.get('imageLocation')?.hasError('maxlength')">
+        Image location cannot exceed 64 characters
+      </mat-error>
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-button type="button" class="cancel-button" (click)="onCancel()">Cancel</button>
+      <button mat-raised-button type="submit" color="primary" class="submit-button" [disabled]="crewForm.invalid || isSubmitting">
+        <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+        <span *ngIf="!isSubmitting">{{ isEditMode ? 'Update Crew' : 'Create Crew' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

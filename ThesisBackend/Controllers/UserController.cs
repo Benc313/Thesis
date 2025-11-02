@@ -106,7 +106,7 @@ public class UserController : ControllerBase
 			return BadRequest(new { message = "Invalid user ID" });
 		}
 		var result = await _userService.GetUserMeets(userId);
-		if (!result.Success || result.SmallEventResponse == null || !result.SmallEventResponse.Any())
+		if (!result.Success || result.SmallEventResponse == null)
 		{
 			_logger.LogWarning("No meets found for user with ID {userId}: {error}", userId, result.ErrorMessage);
 			return NotFound(new { message = "No events found for this user" });
@@ -128,7 +128,7 @@ public class UserController : ControllerBase
 		}
 
 		var result = await _userService.GetUserRaces(userId);
-		if (!result.Success || result.SmallEventResponse == null || !result.SmallEventResponse.Any())
+		if (!result.Success || result.SmallEventResponse == null)
 		{
 			_logger.LogWarning("No races found for user with ID {userId}: {error}", userId, result.ErrorMessage);
 			return NotFound(new { message = "No events found for this user" });

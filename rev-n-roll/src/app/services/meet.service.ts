@@ -45,6 +45,7 @@ export class MeetService {
     if (longitude) params = params.set('Longitude', longitude.toString());
     if (distanceInKm) params = params.set('DistanceInKm', distanceInKm.toString());
     if (tags) params = params.set('Tags', tags.join(','));
+    else params = params.set('Tags', '');
 
     return this.http.get<SmallEvent[]>(`${this.apiUrl}/getMeetsF`, { headers: this.getHeaders(), params });
   }

@@ -138,13 +138,18 @@ public class MeetService : IMeetService
     public async Task<AllMeetsOperationResult> GetFilteredMeetsAsync(LocationQuery query)
     {
         _logger.LogInformation("Retrieving filtered meets with query: {@Query}", query);
-
+        
         var queryable = _context.Meets.AsQueryable();
-
+        
+        if(query.Tags is null)
+            query.Tags = new List<string>();
+        
         queryable = queryable.Where(m => m.Date >= DateTime.UtcNow.Date);
         if (query.Tags.Any())
         {
-            var meetTags = query.Tags.Select(t => Enum.Parse<MeetTags>(t, true)).ToList();
+            var meetTags = query.Tags
+                .Where(t => !string.IsNullOrWhiteSpace(t)) // Skip null or empty strings
+                .Select(t => Enum.Parse<MeetTags>(t, true)).ToList();
             queryable = queryable.Where(m => m.Tags.Any(tag => meetTags.Contains(tag)));
         }
 

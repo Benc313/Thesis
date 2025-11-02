@@ -85,6 +85,6 @@ public class CarService : ICarService
         _context.Cars.Remove(car);
         await _context.SaveChangesAsync();
         _logger.LogInformation("Successfully deleted car with ID: {carId}", carId);
-        return new CarOperationResult { Success = true, CarResponse = new CarResponse(car) };
+        return new CarOperationResult { Success = true };
     }
 }

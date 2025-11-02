@@ -1,14 +1,126 @@
 <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold text-neon-red mb-4">Races</h2>
-    <div class="space-y-4">
-      <div *ngFor="let race of races" class="bg-gray-800 p-4 rounded-lg shadow-lg">
-        <h3 class="text-lg font-semibold">{{ race.name }}</h3>
-        <p>{{ race.date | date:'medium' }}</p>
-        <p>{{ race.private ? 'Private' : 'Public' }}</p>
+  <h2 class="text-2xl font-bold text-neon-red mb-4">Races</h2>
+
+  <div class="mb-6 flex flex-wrap gap-4 items-center">
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="openMapDialog()"
+    >
+      <mat-icon>location_on</mat-icon>
+      Set Location
+    </button>
+
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="applyFilters()"
+    >
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
+  </div>
+
+  <div class="flex flex-col md:flex-row gap-6 align-top">
+    <div class="flex-1 min-h-[400px]">
+      <h3 class="text-xl font-semibold text-neon-blue mb-2">All Races (Filtered by Location)</h3>
+      
+      <div *ngIf="isLoadingAllRaces" class="text-center py-8">
+        <mat-spinner class="mx-auto" diameter="40"></mat-spinner>
+      </div>
+
+      <div *ngIf="errorMessageAllRaces && !isLoadingAllRaces" class="text-center py-8 text-red-500">
+        {{ errorMessageAllRaces }}
+      </div>
+
+      <div *ngIf="!isLoadingAllRaces && !errorMessageAllRaces" class="space-y-4">
+        <div *ngIf="!allRaces || allRaces.length === 0" class="text-center py-8">
+          <p class="text-lg text-gray-300">No races match your filter.</p>
+        </div>
+
+        <div *ngFor="let race of allRaces" class="relative">
+          <mat-card class="race-card bg-gray-800 p-4 rounded-lg shadow-lg cursor-pointer" (click)="viewRace(race.id)">
+            <mat-card-title class="text-lg font-semibold text-neon-blue">
+              {{ race.name }}
+            </mat-card-title>
+            <mat-card-subtitle class="text-gray-300">
+              Date: {{ race.date | date:'medium' }}
+            </mat-card-subtitle>
+            <mat-card-content>
+              <p class="text-gray-300">{{ race.private ? 'Private' : 'Public' }}</p>
+              <p class="text-gray-300">{{ race.isMeet ? 'Event' : 'Race' }}</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
       </div>
     </div>
-    <div class="mt-8">
-      <h3 class="text-xl font-bold text-neon-blue mb-2">Create a New Race</h3>
-      <p class="text-gray-400">Create race feature coming soon!</p>
+
+    <div class="flex-1 min-h-[400px]">
+      <h3 class="text-xl font-semibold text-neon-blue mb-2">Your Races</h3>
+
+      <div *ngIf="isLoadingUserRaces" class="text-center py-8">
+        <mat-spinner class="mx-auto" diameter="40"></mat-spinner>
+      </div>
+
+      <div *ngIf="errorMessageUserRaces && !isLoadingUserRaces" class="text-center py-8 text-red-500">
+        {{ errorMessageUserRaces }}
+      </div>
+
+      <div *ngIf="!isLoadingUserRaces && !errorMessageUserRaces" class="space-y-4">
+        <div *ngIf="!userRaces || userRaces.length === 0" class="text-center py-8">
+          <p class="text-lg text-gray-300">You haven't created any races yet.</p>
+        </div>
+
+        <div *ngFor="let race of userRaces" class="relative">
+          <mat-card class="race-card bg-gray-800 p-4 rounded-lg shadow-lg">
+            <mat-card-title class="text-lg font-semibold text-neon-blue">
+              {{ race.name }}
+            </mat-card-title>
+            <mat-card-subtitle class="text-gray-300">
+              Date: {{ race.date | date:'medium' }}
+            </mat-card-subtitle>
+            <mat-card-content>
+              <p class="text-gray-300">{{ race.private ? 'Private' : 'Public' }}</p>
+              <p class="text-gray-300">{{ race.isMeet ? 'Event' : 'Race' }}</p>
+            </mat-card-content>
+            <div class="button-container flex justify-end gap-2 mt-2">
+              <button
+                mat-icon-button
+                class="text-purple-400 hover:text-purple-600"
+                (click)="onEditRace(race); $event.stopPropagation()"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                class="text-blue-400 hover:text-blue-600"
+                (click)="viewRace(race.id); $event.stopPropagation()"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                class="text-red-400 hover:text-red-600"
+                (click)="onDeleteRace(race.id, $event)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="mt-8">
+          <button
+            mat-raised-button
+            color="primary"
+            class="mt-4"
+            (click)="onCreateRace()"
+          >
+            <mat-icon>flag</mat-icon>
+            Create a New Race
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+</div>

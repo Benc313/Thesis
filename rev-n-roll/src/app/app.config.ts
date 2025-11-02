@@ -8,6 +8,8 @@ import { UserService } from './services/user.service';
 import { CarService } from './services/car.service';
 import { MeetService } from './services/meet.service';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { RaceService } from './services/race.service';
+import { CrewService } from './services/crew.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +20,8 @@ export const appConfig: ApplicationConfig = {
     AuthService,
     UserService,
     CarService,
-    MeetService
+    MeetService,
+    RaceService,
+    CrewService
   ]
 };

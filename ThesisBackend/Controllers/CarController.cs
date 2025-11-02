@@ -132,13 +132,13 @@ public class CarController : ControllerBase
 	    }
 	    _logger.LogInformation("Deleting car with ID {carId}", carId);
 	    var result = await _carService.deleteCar(carId);
-	    if (!result.Success || result.CarResponse == null)
+	    if (!result.Success)
 	    {
 		    _logger.LogWarning("Failed to delete car with ID {carId}", carId);
 		    return NotFound(new { message = "No cars found for this user" });
 	    }
 	    
 	    _logger.LogInformation("Successfully deleted car with ID {carId}", carId);
-	    return Ok();
+	    return NoContent();
     }
 }

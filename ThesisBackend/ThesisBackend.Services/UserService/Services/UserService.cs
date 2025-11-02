@@ -78,11 +78,7 @@ public class UserService : IUserService
             .Include(m => m.Users)
             .Where(m => m.Users.Any(u => u.Id == userId) || m.CreatorId == userId)
             .ToListAsync();
-        if (events.Count == 0)
-        {
-            _logger.LogWarning("No meets found for user with ID {userId} found.", userId);
-            return new UserEventOperationResult { Success = false, ErrorMessage = "Events not found for this user" };
-        }
+        
         _logger.LogInformation("Successfully retrieved meets for user with ID: {userId}", userId);
         return new UserEventOperationResult
             { SmallEventResponse = events.Select(e => new SmallEventResponse(e)).ToList(), Success = true};
@@ -102,11 +98,7 @@ public class UserService : IUserService
             .Include(r => r.Users)
             .Where(m => m.Users.Any(u => u.Id == userId))
             .ToListAsync();
-        if (events.Count == 0)
-        {
-            _logger.LogWarning("No races for user with ID {userId} found.", userId);
-            return new UserEventOperationResult { Success = false, ErrorMessage = "Events not found for this user" };
-        }
+
         _logger.LogInformation("Successfully retrieved races for user with ID: {userId}", userId);
         return new UserEventOperationResult
             { SmallEventResponse = events.Select(e => new SmallEventResponse(e)).ToList(), Success = true};

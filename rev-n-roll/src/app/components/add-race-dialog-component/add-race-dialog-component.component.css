@@ -1,0 +1,206 @@
+/* add-meet-dialog.component.css */
+.dialog-container {
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9));
+  padding: 2rem;
+  border-radius: 0.5rem;
+  color: white;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #a78bfa;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  max-height: calc(80vh - 200px);
+  padding-right: 0.5rem;
+}
+
+/* Customize the scrollbar */
+.form-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.form-content::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.8);
+  border-radius: 4px;
+}
+
+.form-content::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 4px;
+}
+
+.form-content::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
+}
+
+/* Remove the outline borders */
+.mat-form-field-appearance-outline .mat-form-field-outline,
+.mat-form-field-appearance-outline .mat-form-field-outline-start,
+.mat-form-field-appearance-outline .mat-form-field-outline-end,
+.mat-form-field-appearance-outline .mat-form-field-outline-gap {
+  display: none !important;
+}
+
+/* Style the label */
+.mat-form-field-label {
+  color: #d1d5db !important;
+}
+
+/* Style the input background and text */
+input.mat-input-element,
+textarea.mat-input-element {
+  color: white !important;
+  caret-color: #a78bfa !important;
+  background: rgba(31, 41, 55, 0.8) !important;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Add a subtle glow on focus */
+input.mat-input-element:focus,
+textarea.mat-input-element:focus {
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.5);
+}
+
+/* Style invalid fields */
+.mat-form-field-invalid input.mat-input-element,
+.mat-form-field-invalid textarea.mat-input-element {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+/* Error messages */
+.mat-error {
+  color: #ef4444 !important;
+  font-size: 0.75rem;
+}
+
+/* Buttons */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancel-button {
+  color: #d1d5db !important;
+  transition: color 0.3s ease;
+}
+
+.cancel-button:hover {
+  color: #9ca3af !important;
+}
+
+.submit-button {
+  background: #6366f1 !important;
+  color: white !important;
+  padding: 0.5rem 1.5rem !important;
+  border-radius: 0.25rem !important;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-button:hover {
+  background: #4f46e5 !important;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+}
+
+.submit-button:disabled {
+  background: #4b5563 !important;
+  box-shadow: none !important;
+}
+
+.mat-spinner circle {
+  stroke: white !important;
+}
+
+input.mat-input-element,
+textarea.mat-input-element {
+  border-bottom: 1px solid #6b7280 !important;
+}
+
+input.mat-input-element:focus,
+textarea.mat-input-element:focus {
+  border-bottom: 1px solid #a78bfa !important;
+}
+
+.mat-form-field-invalid input.mat-input-element,
+.mat-form-field-invalid textarea.mat-input-element {
+  border-bottom: 1px solid #ef4444 !important;
+}
+
+/* Use a new icon class for the race dialog */
+.race-icon {
+  font-size: 2rem;
+  color: #a78bfa;
+  display: block;
+  margin: 0 auto 1rem;
+  text-align: center;
+  width: 2rem !important;
+  height: 2rem !important;
+  line-height: 2rem !important;
+  overflow: visible !important;
+}
+
+/* Style the checkbox */
+.mat-checkbox-checked .mat-checkbox-background {
+  background-color: #a78bfa !important;
+}
+
+.mat-checkbox-label {
+  color: white !important;
+}
+
+/* Style the mat-select */
+.mat-select-value,
+.mat-select-arrow {
+  color: white !important;
+}
+
+.mat-select-panel {
+  background: rgba(31, 41, 55, 0.9) !important;
+}
+
+.mat-option {
+  color: white !important;
+}
+
+.mat-option:hover,
+.mat-option.mat-selected:not(.mat-option-disabled) {
+  background: rgba(167, 139, 250, 0.3) !important;
+}
+
+/* Location Selection */
+.location-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.location-selection button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Style the time picker */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Makes the clock icon white for dark theme */
+}
