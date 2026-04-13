@@ -1,0 +1,423 @@
+/**
+ * Material Design 3 Theme Configuration for Rev_n_Roll
+ * 
+ * This file defines the Material Design 3 color system with automotive-themed colors.
+ * Supports both light and dark themes with dynamic color tokens.
+ */
+
+@use '@angular/material' as mat;
+
+// Include the common styles for Angular Material
+@include mat.core();
+
+// ============================================================================
+// COLOR PALETTE DEFINITIONS
+// ============================================================================
+
+/**
+ * Primary Color - Racing Red
+ * Represents speed, passion, and automotive performance
+ */
+$primary-palette: (
+  50: #FEF2F2,
+  100: #FEE2E2,
+  200: #FECACA,
+  300: #FCA5A5,
+  400: #F87171,
+  500: #DC2626,  // Main primary color
+  600: #B91C1C,
+  700: #991B1B,
+  800: #7F1D1D,
+  900: #450A0A,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #FFFFFF,
+    500: #FFFFFF,
+    600: #FFFFFF,
+    700: #FFFFFF,
+    800: #FFFFFF,
+    900: #FFFFFF,
+  )
+);
+
+/**
+ * Secondary Color - Performance Blue
+ * Represents precision, technology, and reliability
+ */
+$secondary-palette: (
+  50: #EFF6FF,
+  100: #DBEAFE,
+  200: #BFDBFE,
+  300: #93C5FD,
+  400: #60A5FA,
+  500: #2563EB,  // Main secondary color
+  600: #1D4ED8,
+  700: #1E40AF,
+  800: #1E3A8A,
+  900: #172554,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #FFFFFF,
+    500: #FFFFFF,
+    600: #FFFFFF,
+    700: #FFFFFF,
+    800: #FFFFFF,
+    900: #FFFFFF,
+  )
+);
+
+/**
+ * Tertiary Color - Chrome Silver
+ * Represents elegance, sophistication, and metallic finishes
+ */
+$tertiary-palette: (
+  50: #F8FAFC,
+  100: #F1F5F9,
+  200: #E2E8F0,
+  300: #CBD5E1,
+  400: #94A3B8,
+  500: #64748B,  // Main tertiary color
+  600: #475569,
+  700: #334155,
+  800: #1E293B,
+  900: #0F172A,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #FFFFFF,
+    600: #FFFFFF,
+    700: #FFFFFF,
+    800: #FFFFFF,
+    900: #FFFFFF,
+  )
+);
+
+/**
+ * Accent Color - Neon Orange (for highlights and CTAs)
+ */
+$accent-palette: (
+  50: #FFF7ED,
+  100: #FFEDD5,
+  200: #FED7AA,
+  300: #FDBA74,
+  400: #FB923C,
+  500: #F97316,  // Main accent color
+  600: #EA580C,
+  700: #C2410C,
+  800: #9A3412,
+  900: #7C2D12,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #FFFFFF,
+    600: #FFFFFF,
+    700: #FFFFFF,
+    800: #FFFFFF,
+    900: #FFFFFF,
+  )
+);
+
+// ============================================================================
+// THEME CREATION
+// ============================================================================
+
+// Define the light theme
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+));
+
+// Define the dark theme
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$magenta-palette,
+    tertiary: mat.$violet-palette,
+  ),
+));
+
+// ============================================================================
+// CUSTOM CSS VARIABLES FOR MATERIAL DESIGN 3
+// ============================================================================
+
+:root {
+  // Primary Colors
+  --md-sys-color-primary: #DC2626;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #FECACA;
+  --md-sys-color-on-primary-container: #7F1D1D;
+
+  // Secondary Colors
+  --md-sys-color-secondary: #2563EB;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #DBEAFE;
+  --md-sys-color-on-secondary-container: #1E3A8A;
+
+  // Tertiary Colors
+  --md-sys-color-tertiary: #64748B;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-tertiary-container: #E2E8F0;
+  --md-sys-color-on-tertiary-container: #1E293B;
+
+  // Accent Colors
+  --md-sys-color-accent: #F97316;
+  --md-sys-color-on-accent: #FFFFFF;
+
+  // Error Colors
+  --md-sys-color-error: #DC2626;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #FEE2E2;
+  --md-sys-color-on-error-container: #7F1D1D;
+
+  // Surface Colors (Light Theme)
+  --md-sys-color-surface: #FFFFFF;
+  --md-sys-color-surface-variant: #F8FAFC;
+  --md-sys-color-on-surface: #0F172A;
+  --md-sys-color-on-surface-variant: #475569;
+
+  // Background Colors
+  --md-sys-color-background: #F8FAFC;
+  --md-sys-color-on-background: #0F172A;
+
+  // Outline Colors
+  --md-sys-color-outline: #CBD5E1;
+  --md-sys-color-outline-variant: #E2E8F0;
+
+  // Shadow and Scrim
+  --md-sys-color-shadow: rgba(0, 0, 0, 0.3);
+  --md-sys-color-scrim: rgba(0, 0, 0, 0.5);
+
+  // Elevation Levels
+  --md-sys-elevation-level0: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  --md-sys-elevation-level1: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level2: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-sys-elevation-level3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+  --md-sys-elevation-level4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15), 0px 2px 3px 0px rgba(0, 0, 0, 0.3);
+  --md-sys-elevation-level5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
+
+  // Spacing System (8px grid)
+  --md-sys-spacing-xs: 4px;
+  --md-sys-spacing-sm: 8px;
+  --md-sys-spacing-md: 16px;
+  --md-sys-spacing-lg: 24px;
+  --md-sys-spacing-xl: 32px;
+  --md-sys-spacing-2xl: 40px;
+  --md-sys-spacing-3xl: 48px;
+  --md-sys-spacing-4xl: 64px;
+
+  // Border Radius
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-xs: 4px;
+  --md-sys-shape-corner-sm: 8px;
+  --md-sys-shape-corner-md: 12px;
+  --md-sys-shape-corner-lg: 16px;
+  --md-sys-shape-corner-xl: 28px;
+  --md-sys-shape-corner-full: 9999px;
+
+  // Typography Scale
+  --md-sys-typescale-display-large-size: 57px;
+  --md-sys-typescale-display-large-weight: 400;
+  --md-sys-typescale-display-large-line-height: 64px;
+
+  --md-sys-typescale-display-medium-size: 45px;
+  --md-sys-typescale-display-medium-weight: 400;
+  --md-sys-typescale-display-medium-line-height: 52px;
+
+  --md-sys-typescale-display-small-size: 36px;
+  --md-sys-typescale-display-small-weight: 400;
+  --md-sys-typescale-display-small-line-height: 44px;
+
+  --md-sys-typescale-headline-large-size: 32px;
+  --md-sys-typescale-headline-large-weight: 400;
+  --md-sys-typescale-headline-large-line-height: 40px;
+
+  --md-sys-typescale-headline-medium-size: 28px;
+  --md-sys-typescale-headline-medium-weight: 400;
+  --md-sys-typescale-headline-medium-line-height: 36px;
+
+  --md-sys-typescale-headline-small-size: 24px;
+  --md-sys-typescale-headline-small-weight: 400;
+  --md-sys-typescale-headline-small-line-height: 32px;
+
+  --md-sys-typescale-title-large-size: 22px;
+  --md-sys-typescale-title-large-weight: 500;
+  --md-sys-typescale-title-large-line-height: 28px;
+
+  --md-sys-typescale-title-medium-size: 16px;
+  --md-sys-typescale-title-medium-weight: 500;
+  --md-sys-typescale-title-medium-line-height: 24px;
+
+  --md-sys-typescale-title-small-size: 14px;
+  --md-sys-typescale-title-small-weight: 500;
+  --md-sys-typescale-title-small-line-height: 20px;
+
+  --md-sys-typescale-body-large-size: 16px;
+  --md-sys-typescale-body-large-weight: 400;
+  --md-sys-typescale-body-large-line-height: 24px;
+
+  --md-sys-typescale-body-medium-size: 14px;
+  --md-sys-typescale-body-medium-weight: 400;
+  --md-sys-typescale-body-medium-line-height: 20px;
+
+  --md-sys-typescale-body-small-size: 12px;
+  --md-sys-typescale-body-small-weight: 400;
+  --md-sys-typescale-body-small-line-height: 16px;
+
+  --md-sys-typescale-label-large-size: 14px;
+  --md-sys-typescale-label-large-weight: 500;
+  --md-sys-typescale-label-large-line-height: 20px;
+
+  --md-sys-typescale-label-medium-size: 12px;
+  --md-sys-typescale-label-medium-weight: 500;
+  --md-sys-typescale-label-medium-line-height: 16px;
+
+  --md-sys-typescale-label-small-size: 11px;
+  --md-sys-typescale-label-small-weight: 500;
+  --md-sys-typescale-label-small-line-height: 16px;
+
+  // Transition Durations
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+
+  // Easing Functions
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-decelerated: cubic-bezier(0, 0, 0, 1);
+  --md-sys-motion-easing-accelerated: cubic-bezier(0.3, 0, 1, 1);
+}
+
+// ============================================================================
+// DARK THEME OVERRIDES
+// ============================================================================
+
+[data-theme="dark"] {
+  // Surface Colors (Dark Theme)
+  --md-sys-color-surface: #0F172A;
+  --md-sys-color-surface-variant: #1E293B;
+  --md-sys-color-on-surface: #F1F5F9;
+  --md-sys-color-on-surface-variant: #CBD5E1;
+
+  // Background Colors
+  --md-sys-color-background: #020617;
+  --md-sys-color-on-background: #F1F5F9;
+
+  // Outline Colors
+  --md-sys-color-outline: #475569;
+  --md-sys-color-outline-variant: #334155;
+
+  // Primary Container (adjusted for dark theme)
+  --md-sys-color-primary-container: #991B1B;
+  --md-sys-color-on-primary-container: #FEE2E2;
+
+  // Secondary Container (adjusted for dark theme)
+  --md-sys-color-secondary-container: #1E40AF;
+  --md-sys-color-on-secondary-container: #DBEAFE;
+
+  // Tertiary Container (adjusted for dark theme)
+  --md-sys-color-tertiary-container: #334155;
+  --md-sys-color-on-tertiary-container: #E2E8F0;
+}
+
+// ============================================================================
+// UTILITY CLASSES
+// ============================================================================
+
+// Elevation utility classes
+.elevation-0 { box-shadow: var(--md-sys-elevation-level0); }
+.elevation-1 { box-shadow: var(--md-sys-elevation-level1); }
+.elevation-2 { box-shadow: var(--md-sys-elevation-level2); }
+.elevation-3 { box-shadow: var(--md-sys-elevation-level3); }
+.elevation-4 { box-shadow: var(--md-sys-elevation-level4); }
+.elevation-5 { box-shadow: var(--md-sys-elevation-level5); }
+
+// Surface color utility classes
+.surface { background-color: var(--md-sys-color-surface); color: var(--md-sys-color-on-surface); }
+.surface-variant { background-color: var(--md-sys-color-surface-variant); color: var(--md-sys-color-on-surface-variant); }
+.primary { background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary); }
+.secondary { background-color: var(--md-sys-color-secondary); color: var(--md-sys-color-on-secondary); }
+.tertiary { background-color: var(--md-sys-color-tertiary); color: var(--md-sys-color-on-tertiary); }
+
+// Typography utility classes
+.display-large {
+  font-size: var(--md-sys-typescale-display-large-size);
+  font-weight: var(--md-sys-typescale-display-large-weight);
+  line-height: var(--md-sys-typescale-display-large-line-height);
+}
+
+.headline-medium {
+  font-size: var(--md-sys-typescale-headline-medium-size);
+  font-weight: var(--md-sys-typescale-headline-medium-weight);
+  line-height: var(--md-sys-typescale-headline-medium-line-height);
+}
+
+.title-large {
+  font-size: var(--md-sys-typescale-title-large-size);
+  font-weight: var(--md-sys-typescale-title-large-weight);
+  line-height: var(--md-sys-typescale-title-large-line-height);
+}
+
+.body-large {
+  font-size: var(--md-sys-typescale-body-large-size);
+  font-weight: var(--md-sys-typescale-body-large-weight);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+}
+
+// ============================================================================
+// ACCESSIBILITY ENHANCEMENTS
+// ============================================================================
+
+// Focus visible styles
+*:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+  border-radius: var(--md-sys-shape-corner-xs);
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  :root {
+    --md-sys-color-outline: #000000;
+    --md-sys-color-outline-variant: #000000;
+  }
+
+  [data-theme="dark"] {
+    --md-sys-color-outline: #FFFFFF;
+    --md-sys-color-outline-variant: #FFFFFF;
+  }
+}

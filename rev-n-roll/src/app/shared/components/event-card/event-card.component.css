@@ -1,0 +1,279 @@
+/**
+ * EventCard Component Styles
+ * 
+ * Implements Material Design 3 principles with automotive theming
+ */
+
+/* ============================================================================
+   CARD CONTAINER
+   ============================================================================ */
+
+.event-card {
+  cursor: pointer;
+  transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+              box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+  border-radius: var(--md-sys-shape-corner-md);
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: var(--md-sys-spacing-md);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effect */
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--md-sys-elevation-level3);
+}
+
+/* Focus effect for keyboard navigation */
+.event-card:focus {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+/* Active/pressed state */
+.event-card:active {
+  transform: translateY(-2px);
+}
+
+/* Compact mode */
+.event-card.compact {
+  margin-bottom: var(--md-sys-spacing-sm);
+}
+
+/* Event type specific styling */
+.event-card-meet {
+  border-left: 4px solid var(--md-sys-color-primary);
+}
+
+.event-card-race {
+  border-left: 4px solid var(--md-sys-color-accent);
+}
+
+/* ============================================================================
+   CARD HEADER
+   ============================================================================ */
+
+.event-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-sys-shape-corner-full);
+  background-color: var(--md-sys-color-surface-variant);
+}
+
+.event-icon-container mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.event-title {
+  font-size: var(--md-sys-typescale-title-large-size);
+  font-weight: var(--md-sys-typescale-title-large-weight);
+  line-height: var(--md-sys-typescale-title-large-line-height);
+  color: var(--md-sys-color-on-surface);
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-sm);
+}
+
+.private-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--md-sys-color-tertiary);
+}
+
+.event-date {
+  font-size: var(--md-sys-typescale-body-medium-size);
+  color: var(--md-sys-color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.subtitle-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================================================
+   CARD CONTENT
+   ============================================================================ */
+
+mat-card-content {
+  padding: var(--md-sys-spacing-md) 0;
+}
+
+.event-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-sm);
+  margin-bottom: var(--md-sys-spacing-sm);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.info-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--md-sys-color-tertiary);
+}
+
+.info-text {
+  flex: 1;
+  line-height: var(--md-sys-typescale-body-medium-line-height);
+}
+
+.event-description {
+  font-size: var(--md-sys-typescale-body-large-size);
+  line-height: var(--md-sys-typescale-body-large-line-height);
+  color: var(--md-sys-color-on-surface);
+  margin: var(--md-sys-spacing-md) 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-description.compact {
+  -webkit-line-clamp: 2;
+  font-size: var(--md-sys-typescale-body-medium-size);
+}
+
+/* ============================================================================
+   TAGS
+   ============================================================================ */
+
+.event-tags {
+  margin-top: var(--md-sys-spacing-md);
+}
+
+mat-chip-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--md-sys-spacing-xs);
+}
+
+.event-tag {
+  font-size: var(--md-sys-typescale-label-small-size);
+  font-weight: var(--md-sys-typescale-label-small-weight);
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border-radius: var(--md-sys-shape-corner-sm);
+  padding: 4px 12px;
+  height: auto;
+}
+
+/* ============================================================================
+   CARD ACTIONS
+   ============================================================================ */
+
+.event-actions {
+  display: flex;
+  gap: var(--md-sys-spacing-sm);
+  padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-md);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  margin: 0;
+}
+
+.event-actions button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: var(--md-sys-typescale-label-large-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-actions button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+/* Mobile (< 640px) */
+@media (max-width: 639px) {
+  .event-card {
+    margin-bottom: var(--md-sys-spacing-sm);
+  }
+
+  .event-title {
+    font-size: var(--md-sys-typescale-title-medium-size);
+  }
+
+  .event-description {
+    -webkit-line-clamp: 2;
+  }
+
+  .event-actions {
+    flex-wrap: wrap;
+  }
+
+  .event-actions button {
+    flex: 1 1 auto;
+    min-width: 80px;
+  }
+}
+
+/* Tablet (640px - 1024px) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .event-card {
+    margin-bottom: var(--md-sys-spacing-md);
+  }
+}
+
+/* Desktop (>= 1024px) */
+@media (min-width: 1024px) {
+  .event-card {
+    margin-bottom: var(--md-sys-spacing-lg);
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .event-card {
+    border: 2px solid var(--md-sys-color-outline);
+  }
+
+  .event-card:focus {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .event-card {
+    transition: none;
+  }
+
+  .event-card:hover {
+    transform: none;
+  }
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .event-card {
+  background-color: var(--md-sys-color-surface-variant);
+}
+
+[data-theme="dark"] .event-icon-container {
+  background-color: var(--md-sys-color-surface);
+}

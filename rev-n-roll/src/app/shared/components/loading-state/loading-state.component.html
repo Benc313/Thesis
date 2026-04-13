@@ -1,0 +1,113 @@
+<!-- 
+  LoadingState Component Template
+  Displays skeleton screens based on the specified type
+-->
+
+<div 
+  class="loading-container"
+  [class.layout-horizontal]="layout === 'horizontal'"
+  [class.layout-vertical]="layout === 'vertical'"
+  role="status"
+  [attr.aria-label]="ariaLabel"
+  aria-live="polite">
+
+  <!-- Event Card Skeleton -->
+  <div *ngIf="type === 'event-card'" class="skeleton-wrapper">
+    <div *ngFor="let item of getCountArray()" class="skeleton-event-card" [class.shimmer]="shimmer">
+      <div class="skeleton-header">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-header-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-subtitle"></div>
+        </div>
+      </div>
+      <div class="skeleton-content">
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text short"></div>
+      </div>
+      <div class="skeleton-tags">
+        <div class="skeleton-tag"></div>
+        <div class="skeleton-tag"></div>
+        <div class="skeleton-tag"></div>
+      </div>
+      <div class="skeleton-actions">
+        <div class="skeleton-button"></div>
+        <div class="skeleton-button"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Skeleton -->
+  <div *ngIf="type === 'card'" class="skeleton-wrapper">
+    <div *ngFor="let item of getCountArray()" class="skeleton-card" [class.shimmer]="shimmer">
+      <div class="skeleton-image"></div>
+      <div class="skeleton-content">
+        <div class="skeleton-title"></div>
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text short"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- List Skeleton -->
+  <div *ngIf="type === 'list'" class="skeleton-wrapper">
+    <div *ngFor="let item of getCountArray()" class="skeleton-list-item" [class.shimmer]="shimmer">
+      <div class="skeleton-avatar"></div>
+      <div class="skeleton-list-content">
+        <div class="skeleton-title"></div>
+        <div class="skeleton-text short"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Skeleton -->
+  <div *ngIf="type === 'table'" class="skeleton-table" [class.shimmer]="shimmer">
+    <div class="skeleton-table-header">
+      <div class="skeleton-table-cell"></div>
+      <div class="skeleton-table-cell"></div>
+      <div class="skeleton-table-cell"></div>
+      <div class="skeleton-table-cell"></div>
+    </div>
+    <div *ngFor="let item of getCountArray()" class="skeleton-table-row">
+      <div class="skeleton-table-cell"></div>
+      <div class="skeleton-table-cell"></div>
+      <div class="skeleton-table-cell"></div>
+      <div class="skeleton-table-cell"></div>
+    </div>
+  </div>
+
+  <!-- Form Skeleton -->
+  <div *ngIf="type === 'form'" class="skeleton-form" [class.shimmer]="shimmer">
+    <div *ngFor="let item of getCountArray()" class="skeleton-form-field">
+      <div class="skeleton-label"></div>
+      <div class="skeleton-input"></div>
+    </div>
+    <div class="skeleton-button-group">
+      <div class="skeleton-button"></div>
+      <div class="skeleton-button"></div>
+    </div>
+  </div>
+
+  <!-- Profile Skeleton -->
+  <div *ngIf="type === 'profile'" class="skeleton-profile" [class.shimmer]="shimmer">
+    <div class="skeleton-profile-header">
+      <div class="skeleton-avatar-large"></div>
+      <div class="skeleton-profile-info">
+        <div class="skeleton-title"></div>
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text short"></div>
+      </div>
+    </div>
+    <div class="skeleton-profile-content">
+      <div class="skeleton-text"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-text"></div>
+      <div class="skeleton-text short"></div>
+    </div>
+  </div>
+
+  <!-- Screen reader text -->
+  <span class="sr-only">{{ ariaLabel }}</span>
+</div>

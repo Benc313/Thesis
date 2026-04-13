@@ -1,0 +1,130 @@
+<div class="container">
+  <button class="text-slate-400 hover:text-white text-sm flex items-center gap-1 mb-4 transition" (click)="router.navigate(['/crews'])">
+    <mat-icon style="font-size: 18px; width: 18px; height: 18px;">arrow_back</mat-icon> Back to Crews
+  </button>
+
+  <div *ngIf="isLoading" class="text-center py-16">
+    <mat-spinner class="mx-auto" diameter="36"></mat-spinner>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="text-center py-16">
+    <mat-icon class="text-slate-600" style="font-size: 48px; width: 48px; height: 48px;">error_outline</mat-icon>
+    <p class="text-slate-400 mt-3">{{ errorMessage }}</p>
+    <button mat-raised-button color="primary" class="mt-4" (click)="router.navigate(['/crews'])">Back to Crews</button>
+  </div>
+
+  <div *ngIf="crew && !isLoading">
+    <!-- Crew Header -->
+    <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-6 mb-6">
+      <div class="flex flex-col sm:flex-row items-start gap-5">
+        <img
+          [src]="crew.imageLocation || 'assets/default-crew.png'"
+          alt="{{ crew.name }}"
+          class="w-20 h-20 rounded-xl object-cover border-2 border-indigo-500/30 flex-shrink-0"
+        >
+        <div class="flex-1">
+          <h1 class="text-2xl font-bold text-white">{{ crew.name }}</h1>
+          <p class="text-slate-400 text-sm mt-1">{{ crew.users.length }} member{{ crew.users.length !== 1 ? 's' : '' }}</p>
+          <p class="text-slate-300 text-sm mt-2">{{ crew.description || 'No description provided.' }}</p>
+          <div class="flex gap-2 mt-4">
+            <button *ngIf="!isMember()" mat-raised-button color="primary" (click)="joinCrew()">
+              <mat-icon>person_add</mat-icon> Join Crew
+            </button>
+            <button *ngIf="isMember() && !isLeader()" mat-raised-button color="accent" (click)="leaveCrew()">
+              <mat-icon>logout</mat-icon> Leave
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- Left: Events -->
+      <div class="flex-1">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-white">Events</h2>
+          <div *ngIf="isMember()" class="flex gap-2">
+            <button mat-raised-button color="primary" (click)="onCreateMeet()">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px;">event</mat-icon> Meet
+            </button>
+            <button mat-raised-button color="accent" (click)="onCreateRace()">
+              <mat-icon style="font-size: 16px; width: 16px; height: 16px;">flag</mat-icon> Race
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="isLoadingEvents" class="text-center py-8">
+          <mat-spinner class="mx-auto" diameter="28"></mat-spinner>
+        </div>
+
+        <div *ngIf="!isLoadingEvents && events.length === 0" class="text-center py-10 bg-slate-800/30 border border-slate-700/30 rounded-xl">
+          <mat-icon class="text-slate-600" style="font-size: 40px; width: 40px; height: 40px;">event_busy</mat-icon>
+          <p class="text-slate-400 mt-2">No events yet</p>
+          <p *ngIf="isMember()" class="text-slate-500 text-sm mt-1">Create a meet or race above!</p>
+        </div>
+
+        <div *ngIf="!isLoadingEvents" class="space-y-3">
+          <div
+            *ngFor="let event of events"
+            class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 flex items-center gap-4 hover:border-indigo-500/30 transition cursor-pointer"
+            (click)="viewEvent(event)"
+          >
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+                 [ngClass]="event.isMeet ? 'bg-purple-500/20' : 'bg-red-500/20'">
+              <mat-icon [ngClass]="event.isMeet ? 'text-purple-400' : 'text-red-400'"
+                        style="font-size: 20px; width: 20px; height: 20px;">
+                {{ event.isMeet ? 'event' : 'flag' }}
+              </mat-icon>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-white font-medium truncate">{{ event.name }}</h4>
+              <p class="text-slate-400 text-sm">{{ event.date | date:'mediumDate' }}</p>
+            </div>
+            <span class="flex-shrink-0 text-xs font-medium px-2 py-0.5 rounded-full"
+                  [ngClass]="event.isMeet ? 'bg-purple-500/20 text-purple-300' : 'bg-red-500/20 text-red-300'">
+              {{ event.isMeet ? 'Meet' : 'Race' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Members -->
+      <div class="w-full md:w-80 flex-shrink-0">
+        <h2 class="text-lg font-semibold text-white mb-4">Members</h2>
+        <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl overflow-hidden divide-y divide-slate-700/40">
+          <div *ngFor="let member of crew.users" class="p-3">
+            <div class="flex items-center gap-3">
+              <img
+                [src]="member.imageLocation || 'assets/default-profile.png'"
+                alt="{{ member.nickname }}"
+                class="w-8 h-8 rounded-full object-cover flex-shrink-0"
+              >
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <p class="text-white text-sm font-medium truncate">{{ member.nickname }}</p>
+                  <span class="text-xs font-medium px-1.5 py-0.5 rounded-full" [ngClass]="getRankClass(member.rank)">
+                    {{ getRankLabel(member.rank) }}
+                  </span>
+                </div>
+              </div>
+              <div *ngIf="isLeader() && member.id !== userId.toString()" class="flex gap-1 flex-shrink-0">
+                <select
+                  class="bg-slate-700 text-slate-200 text-xs rounded px-1.5 py-1 border border-slate-600 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  [ngModel]="member.rank ?? 0"
+                  (ngModelChange)="onChangeRank(member, $event)"
+                >
+                  <option *ngFor="let opt of rankOptions" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+                <button mat-icon-button class="!w-7 !h-7 text-slate-500 hover:text-red-400"
+                        matTooltip="Remove member"
+                        (click)="removeMember(member)">
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px;">person_remove</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

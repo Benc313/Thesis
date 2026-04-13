@@ -1,16 +1,16 @@
 <nav>
   <div class="nav-container">
-    <div class="nav-logo">Rev_n_Roll</div>
+    <a routerLink="/home" class="nav-logo">Rev<span class="text-purple-400">_n_</span>Roll</a>
     <button class="nav-toggle" (click)="toggleMenu()">
       <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
     </button>
     <div class="nav-links" [ngClass]="{'nav-links-open': menuOpen}">
-      <a routerLink="/home" (click)="closeMenu()">Home</a>
-      <a routerLink="/meets" (click)="closeMenu()">Meets</a>
-      <a routerLink="/races" (click)="closeMenu()">Races</a>
-      <a routerLink="/crews" (click)="closeMenu()">Crews</a>
-      <a routerLink="/profile" (click)="closeMenu()">Profile</a>
-      <button (click)="logout(); closeMenu()">Logout</button>
+      <a routerLink="/home" (click)="closeMenu()"><mat-icon>home</mat-icon> Home</a>
+      <a routerLink="/meets" (click)="closeMenu()"><mat-icon>event</mat-icon> Meets</a>
+      <a routerLink="/races" (click)="closeMenu()"><mat-icon>flag</mat-icon> Races</a>
+      <a routerLink="/crews" (click)="closeMenu()"><mat-icon>groups</mat-icon> Crews</a>
+      <a routerLink="/profile" (click)="closeMenu()"><mat-icon>person</mat-icon> Profile</a>
+      <button (click)="logout(); closeMenu()"><mat-icon>logout</mat-icon> Logout</button>
     </div>
   </div>
 </nav>

@@ -137,10 +137,10 @@ public class CrewService : ICrewService
             .Where(e => e.CrewId == crewId)
             .Select(e => new SmallEventResponse(e))
             .ToListAsync();
-        events.AddRange(
-            _context.Races.
-            Where(e => e.CrewId == crewId).
-            Select(e => new SmallEventResponse(e)));
+        events.AddRange(await _context.Meets
+            .Where(e => e.CrewId == crewId)
+            .Select(e => new SmallEventResponse(e))
+            .ToListAsync());
         return new EventsForCrewOperationResult { Success = true, Events = events };
     }
     
@@ -161,5 +161,17 @@ public class CrewService : ICrewService
 
         _logger.LogInformation("User {UserId} rank updated in Crew {CrewId} to {Rank}", userId, crewId, rank);
         return new CrewOperationResult { Success = true };
+    }
+
+    public async Task<AllCrewsOperationResult> GetUserCrewsAsync(int userId)
+    {
+        var crews = await _context.Crews
+            .Include(c => c.UserCrews)
+            .ThenInclude(uc => uc.User)
+            .Where(c => c.UserCrews.Any(uc => uc.UserId == userId))
+            .Select(c => new CrewResponse(c))
+            .ToListAsync();
+
+        return new AllCrewsOperationResult { Success = true, Crews = crews };
     }
 }

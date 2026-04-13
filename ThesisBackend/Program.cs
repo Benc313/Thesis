@@ -123,7 +123,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "http://localhost:80")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -202,9 +202,9 @@ if (!app.Environment.IsEnvironment("Testing"))
         var appLogger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         try
         {
-            appLogger.LogInformation("Attempting to apply database migrations...");
-            dbCtx.Database.Migrate();
-            appLogger.LogInformation("Database migrations applied successfully.");
+            appLogger.LogInformation("Attempting to ensure database is created...");
+            dbCtx.Database.EnsureCreated();
+            appLogger.LogInformation("Database ensured successfully.");
         }
         catch (Exception ex)
         {
@@ -261,6 +261,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapGet("/health", () => Results.Ok("healthy"));
 app.Run();
 
 

@@ -2,6 +2,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +14,7 @@ import { CrewService } from '../../services/crew.service';
 import { Crew, CrewRequest } from '../../models/crew';
 import { AddCrewDialogComponent } from '../add-crew-dialog/add-crew-dialog.component'; 
 import { AuthService } from '../../services/auth.service';
-import { MatTooltipModule } from '@angular/material/tooltip'; // Added for tooltips
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-crews',
@@ -42,7 +43,8 @@ export class CrewsComponent implements OnInit {
     private crewService: CrewService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +66,10 @@ export class CrewsComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  viewCrew(crewId: number): void {
+    this.router.navigate(['/crew', crewId]);
   }
 
   onCreateCrew(): void {

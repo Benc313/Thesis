@@ -93,4 +93,11 @@ public class CrewController : ControllerBase
         var result = await _crewService.UpdateUserRankAsync(crewId, userId, rank);
         return result.Success ? Ok() : BadRequest(new { message = result.ErrorMessage });
     }
+
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetUserCrews(int userId)
+    {
+        var result = await _crewService.GetUserCrewsAsync(userId);
+        return Ok(result.Crews);
+    }
 }

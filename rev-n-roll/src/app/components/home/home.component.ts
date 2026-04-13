@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../services/user.service';
 import { SmallEvent } from '../../models/event';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
@@ -7,7 +8,7 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NavBarComponent],
+  imports: [CommonModule, NavBarComponent, MatIconModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

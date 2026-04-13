@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Crew, CrewRequest } from '../models/crew';
+import { SmallEvent } from '../models/event';
 import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrewService {
-  private apiUrl = 'http://localhost:5123/api/v1/crews';
+  private apiUrl = 'http://localhost:5000/api/v1/crews';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -56,5 +57,17 @@ export class CrewService {
   removeUserFromCrew(crewId: number, userId: number): Observable<void> {
     // DELETE /api/v1/crews/{crewId}/users/{userId}
     return this.http.delete<void>(`${this.apiUrl}/${crewId}/users/${userId}`, { headers: this.getHeaders() });
+  }
+
+  getEventsForCrew(crewId: number): Observable<SmallEvent[]> {
+    return this.http.get<SmallEvent[]>(`${this.apiUrl}/${crewId}/events`, { headers: this.getHeaders() });
+  }
+
+  getUserCrews(userId: number): Observable<Crew[]> {
+    return this.http.get<Crew[]>(`${this.apiUrl}/user/${userId}`, { headers: this.getHeaders() });
+  }
+
+  updateUserRank(crewId: number, userId: number, rank: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${crewId}/users/${userId}?rank=${rank}`, {}, { headers: this.getHeaders() });
   }
 }

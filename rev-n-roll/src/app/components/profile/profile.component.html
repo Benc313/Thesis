@@ -1,94 +1,92 @@
 <div class="container">
-  <!-- Profile Section -->
-  <mat-card class="mb-8">
-    <div class="flex">
-      <div class="relative">
-        <img
-          [src]="user?.imageLocation || 'assets/default-profile.png'"
-          alt="Profile Picture"
-          class="profile-picture pulse-border"
-        />
-      </div>
+  <h2 class="page-header"><mat-icon>person</mat-icon> Profile</h2>
+
+  <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-6 mb-6">
+    <div class="flex flex-col sm:flex-row items-start gap-5">
+      <img
+        [src]="user?.imageLocation || 'assets/default-profile.png'"
+        alt="Profile Picture"
+        class="profile-picture"
+      />
       <div class="flex-1">
         <h2 class="profile-nickname">{{ user?.nickname || 'User' }}</h2>
-        <p class="text-lg italic text-gray-300">{{ user?.description || 'No description yet.' }}</p>
-        <button
-          mat-raised-button
-          color="primary"
-          class="mt-4"
-          (click)="onEditProfile()"
-        >
-          Edit Profile
+        <p class="text-slate-400 text-sm mt-1">{{ user?.email }}</p>
+        <p class="text-slate-300 text-sm mt-2">{{ user?.description || 'No description yet.' }}</p>
+        <button mat-raised-button color="primary" class="mt-4" (click)="onEditProfile()">
+          <mat-icon>edit</mat-icon> Edit Profile
         </button>
       </div>
     </div>
-  </mat-card>
+  </div>
 
-  <!-- Cars and Crews Section -->
   <div class="cards-container">
-    <!-- Cars Section -->
-    <mat-card class="card-item">
-      <mat-card-title>Cars</mat-card-title>
-      <mat-card-content>
-        <!-- Empty State -->
-        <div *ngIf="!cars || cars.length === 0" class="text-center py-8">
-          <p class="text-lg text-gray-300">You haven't added any cars yet.</p>
+    <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-5">
+      <h3 class="section-header"><mat-icon style="font-size: 18px; width: 18px; height: 18px; vertical-align: middle; margin-right: 4px;">directions_car</mat-icon> Cars</h3>
+
+      <div *ngIf="!cars || cars.length === 0" class="text-center py-10">
+        <mat-icon class="text-slate-600" style="font-size: 48px; width: 48px; height: 48px;">directions_car</mat-icon>
+        <p class="text-slate-400 mt-3">No cars added yet</p>
+        <button mat-raised-button color="accent" class="mt-4" (click)="onAddCar()">
+          <mat-icon>add</mat-icon> Add Your First Car
+        </button>
+      </div>
+
+      <div *ngFor="let car of cars" class="mb-4">
+        <div class="bg-slate-900/40 border-l-3 border-indigo-500 rounded-lg p-3 hover:bg-slate-900/60 transition cursor-pointer relative group" (click)="openEditCarDialog(car)">
+          <div>
+            <h4 class="text-white font-medium text-sm">{{ car.brand }} {{ car.model }}</h4>
+            <p class="text-slate-400 text-xs mt-0.5">{{ car.engine }} &middot; {{ car.horsePower }} HP</p>
+            <p class="text-slate-500 text-xs mt-1">{{ car.description || 'No description' }}</p>
+          </div>
           <button
-            mat-raised-button
-            color="accent"
-            class="mt-4"
-            (click)="onAddCar()"
+            mat-icon-button
+            class="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition"
+            (click)="deleteCar(car.id, $event)"
           >
-            Add Your First Car
+            <mat-icon>delete</mat-icon>
           </button>
         </div>
+      </div>
 
-        <!-- Car List -->
-        <div *ngFor="let car of cars" class="mb-6">
-          <mat-card class="car-card" (click)="openEditCarDialog(car)">
-            <div class="relative">
-              <mat-card-title>
-                {{ car.brand }} {{ car.model }}
-              </mat-card-title>
-              <mat-card-subtitle>
-                Engine: {{ car.engine }} | HP: {{ car.horsePower }}
-              </mat-card-subtitle>
-              <mat-card-content>
-                <p class="mt-2">{{ car.description || 'No description provided.' }}</p>
-              </mat-card-content>
-            </div>
-            <button
-              mat-icon-button
-              class="absolute top-2 right-2 text-red-400 hover:text-red-600"
-              (click)="deleteCar(car.id, $event)"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
-          </mat-card>
-        </div>
+      <button *ngIf="cars && cars.length > 0" mat-raised-button color="accent" class="mt-2" (click)="onAddCar()">
+        <mat-icon>add</mat-icon> Add a Car
+      </button>
+    </div>
 
-        <!-- Add a Car Button (Shown only if there are cars) -->
-        <button
-          *ngIf="cars && cars.length > 0"
-          mat-raised-button
-          color="accent"
-          class="mt-4"
-          (click)="onAddCar()"
-        >
-          Add a Car
+    <div class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-5">
+      <h3 class="section-header"><mat-icon style="font-size: 18px; width: 18px; height: 18px; vertical-align: middle; margin-right: 4px;">groups</mat-icon> My Crews</h3>
+
+      <div *ngIf="!crews || crews.length === 0" class="text-center py-10">
+        <mat-icon class="text-slate-600" style="font-size: 48px; width: 48px; height: 48px;">groups</mat-icon>
+        <p class="text-slate-400 mt-3">You're not in any crew yet</p>
+        <button mat-raised-button color="accent" class="mt-4" (click)="router.navigate(['/crews'])">
+          <mat-icon>search</mat-icon> Browse Crews
         </button>
-      </mat-card-content>
-    </mat-card>
+      </div>
 
-    <!-- Crews Section -->
-    <mat-card class="card-item">
-      <mat-card-title>Crews</mat-card-title>
-      <mat-card-content>
-        <div class="text-center py-8">
-          <p class="text-lg text-gray-300">Crews feature coming soon!</p>
-          <mat-icon class="text-4xl mt-4 pulse-icon">group</mat-icon>
+      <div
+        *ngFor="let crew of crews"
+        class="bg-slate-900/40 rounded-lg p-3 mb-3 hover:bg-slate-900/60 transition cursor-pointer"
+        (click)="viewCrew(crew.id)"
+      >
+        <div class="flex items-center gap-3">
+          <img
+            [src]="crew.imageLocation || 'assets/default-crew.png'"
+            alt="{{ crew.name }}"
+            class="w-10 h-10 rounded-full object-cover border border-indigo-500/30 flex-shrink-0"
+          >
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <h4 class="text-white text-sm font-medium truncate">{{ crew.name }}</h4>
+              <span class="text-xs font-medium px-1.5 py-0.5 rounded-full" [ngClass]="getRankClass(crew)">
+                {{ getUserRank(crew) }}
+              </span>
+            </div>
+            <p class="text-slate-500 text-xs mt-0.5">{{ crew.users.length }} member{{ crew.users.length !== 1 ? 's' : '' }}</p>
+          </div>
+          <mat-icon class="text-slate-600">chevron_right</mat-icon>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </div>
 </div>
