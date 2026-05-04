@@ -1,0 +1,16 @@
+<div class="empty-state" role="status" aria-live="polite">
+  <div class="empty-state-icon" *ngIf="showIllustration">
+    <mat-icon [attr.aria-label]="title">{{ icon }}</mat-icon>
+  </div>
+  <h2 class="empty-state-title">{{ title }}</h2>
+  <p class="empty-state-message">{{ message }}</p>
+  <button 
+    *ngIf="actionText"
+    mat-raised-button 
+    color="primary"
+    (click)="onActionClick()"
+    class="empty-state-action">
+    <mat-icon *ngIf="actionIcon">{{ actionIcon }}</mat-icon>
+    {{ actionText }}
+  </button>
+</div>

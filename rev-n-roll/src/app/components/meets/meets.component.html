@@ -1,146 +1,97 @@
-<div class="container mx-auto p-4">
-  <!-- Header -->
-  <h2 class="text-2xl font-bold text-neon-red mb-4">Car Meets</h2>
+<div class="container">
+  <h2 class="page-header"><mat-icon>event</mat-icon> Car Meets</h2>
 
-  <!-- Filters Section -->
-  <div class="mb-6 flex flex-wrap gap-4 items-center">
-    <!-- Tags Filter -->
-    <mat-form-field appearance="fill" class="w-64">
+  <div class="mb-6 flex flex-wrap gap-3 items-center">
+    <mat-form-field appearance="outline" class="w-64">
       <mat-label>Filter by Tags</mat-label>
       <mat-select [(ngModel)]="selectedTags" multiple (ngModelChange)="applyFilters()">
         <mat-option *ngFor="let tag of availableTags" [value]="tag">{{ tag }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <!-- Set Location Button -->
-    <button
-      mat-raised-button
-      color="accent"
-      (click)="openMapDialog()"
-    >
-      <mat-icon>location_on</mat-icon>
-      Set Location
+    <button mat-raised-button color="accent" (click)="openMapDialog()">
+      <mat-icon>location_on</mat-icon> Set Location
     </button>
-
-    <!-- Filter Button -->
-    <button
-      mat-raised-button
-      color="accent"
-      (click)="applyFilters()"
-    >
-      <mat-icon>filter_list</mat-icon>
-      Filter
+    <button mat-raised-button color="accent" (click)="applyFilters()">
+      <mat-icon>filter_list</mat-icon> Filter
     </button>
   </div>
 
-  <!-- Two-Column Layout -->
   <div class="flex flex-col md:flex-row gap-6 align-top">
-    <!-- Left Column: All Meets -->
     <div class="flex-1 min-h-[400px]">
-      <h3 class="text-xl font-semibold text-neon-blue mb-2">All Meets</h3>
-      
-      <!-- Loading State -->
-      <div *ngIf="isLoadingAllMeets" class="text-center py-8">
-        <mat-spinner class="mx-auto" diameter="40"></mat-spinner>
+      <h3 class="section-header">All Meets</h3>
+
+      <div *ngIf="isLoadingAllMeets" class="text-center py-12">
+        <mat-spinner class="mx-auto" diameter="36"></mat-spinner>
       </div>
 
-      <!-- Error Message -->
-      <div *ngIf="errorMessageAllMeets && !isLoadingAllMeets" class="text-center py-8 text-red-500">
+      <div *ngIf="errorMessageAllMeets && !isLoadingAllMeets" class="text-center py-8 text-red-400 text-sm">
         {{ errorMessageAllMeets }}
       </div>
 
-      <!-- All Meets List -->
-      <div *ngIf="!isLoadingAllMeets && !errorMessageAllMeets" class="space-y-4">
-        <div *ngIf="!allMeets || allMeets.length === 0" class="text-center py-8">
-          <p class="text-lg text-gray-300">No meets available.</p>
+      <div *ngIf="!isLoadingAllMeets && !errorMessageAllMeets" class="space-y-3">
+        <div *ngIf="!allMeets || allMeets.length === 0" class="text-center py-12">
+          <p class="text-slate-400">No meets available.</p>
         </div>
 
-        <div *ngFor="let meet of allMeets" class="relative">
-          <mat-card class="meet-card bg-gray-800 p-4 rounded-lg shadow-lg cursor-pointer" (click)="viewMeet(meet.id)">
-            <mat-card-title class="text-lg font-semibold text-neon-blue">
-              {{ meet.name }}
-            </mat-card-title>
-            <mat-card-subtitle class="text-gray-300">
-              Date: {{ meet.date | date:'medium' }}
-            </mat-card-subtitle>
-            <mat-card-content>
-              <p class="text-gray-300">{{ meet.private ? 'Private' : 'Public' }}</p>
-              <p class="text-gray-300">{{ meet.isMeet ? 'Meet' : 'Event' }}</p>
-            </mat-card-content>
-          </mat-card>
+        <div
+          *ngFor="let meet of allMeets"
+          class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 cursor-pointer hover:border-indigo-500/30 transition"
+          (click)="viewMeet(meet.id)"
+        >
+          <h4 class="text-white font-medium">{{ meet.name }}</h4>
+          <p class="text-slate-400 text-sm mt-1">{{ meet.date | date:'mediumDate' }}</p>
+          <span class="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full"
+                [ngClass]="meet.private ? 'bg-slate-700 text-slate-300' : 'bg-indigo-500/20 text-indigo-300'">
+            {{ meet.private ? 'Private' : 'Public' }}
+          </span>
         </div>
       </div>
     </div>
 
-    <!-- Right Column: User's Meets -->
     <div class="flex-1 min-h-[400px]">
-      <h3 class="text-xl font-semibold text-neon-blue mb-2">Your Meets</h3>
+      <h3 class="section-header">Your Meets</h3>
 
-      <!-- Loading State -->
-      <div *ngIf="isLoadingUserMeets" class="text-center py-8">
-        <mat-spinner class="mx-auto" diameter="40"></mat-spinner>
+      <div *ngIf="isLoadingUserMeets" class="text-center py-12">
+        <mat-spinner class="mx-auto" diameter="36"></mat-spinner>
       </div>
 
-      <!-- Error Message -->
-      <div *ngIf="errorMessageUserMeets && !isLoadingUserMeets" class="text-center py-8 text-red-500">
+      <div *ngIf="errorMessageUserMeets && !isLoadingUserMeets" class="text-center py-8 text-red-400 text-sm">
         {{ errorMessageUserMeets }}
       </div>
 
-      <!-- User's Meets List -->
-      <div *ngIf="!isLoadingUserMeets && !errorMessageUserMeets" class="space-y-4">
-        <div *ngIf="!userMeets || userMeets.length === 0" class="text-center py-8">
-          <p class="text-lg text-gray-300">You haven't created any meets yet.</p>
+      <div *ngIf="!isLoadingUserMeets && !errorMessageUserMeets" class="space-y-3">
+        <div *ngIf="!userMeets || userMeets.length === 0" class="text-center py-12">
+          <p class="text-slate-400">You haven't created any meets yet.</p>
         </div>
 
-        <div *ngFor="let meet of userMeets" class="relative">
-          <mat-card class="meet-card bg-gray-800 p-4 rounded-lg shadow-lg">
-            <mat-card-title class="text-lg font-semibold text-neon-blue">
-              {{ meet.name }}
-            </mat-card-title>
-            <mat-card-subtitle class="text-gray-300">
-              Date: {{ meet.date | date:'medium' }}
-            </mat-card-subtitle>
-            <mat-card-content>
-              <p class="text-gray-300">{{ meet.private ? 'Private' : 'Public' }}</p>
-              <p class="text-gray-300">{{ meet.isMeet ? 'Meet' : 'Event' }}</p>
-            </mat-card-content>
-            <!-- Buttons Container -->
-            <div class="button-container flex justify-end gap-2 mt-2">
-              <button
-                mat-icon-button
-                class="text-purple-400 hover:text-purple-600"
-                (click)="onEditMeet(meet); $event.stopPropagation()"
-              >
+        <div *ngFor="let meet of userMeets" class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 hover:border-indigo-500/30 transition">
+          <div class="flex items-start justify-between">
+            <div>
+              <h4 class="text-white font-medium">{{ meet.name }}</h4>
+              <p class="text-slate-400 text-sm mt-1">{{ meet.date | date:'mediumDate' }}</p>
+              <span class="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full"
+                    [ngClass]="meet.private ? 'bg-slate-700 text-slate-300' : 'bg-indigo-500/20 text-indigo-300'">
+                {{ meet.private ? 'Private' : 'Public' }}
+              </span>
+            </div>
+            <div class="flex gap-1">
+              <button mat-icon-button class="text-slate-400 hover:text-indigo-400" (click)="onEditMeet(meet); $event.stopPropagation()">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button
-                mat-icon-button
-                class="text-blue-400 hover:text-blue-600"
-                (click)="viewMeet(meet.id); $event.stopPropagation()"
-              >
+              <button mat-icon-button class="text-slate-400 hover:text-indigo-400" (click)="viewMeet(meet.id); $event.stopPropagation()">
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button
-                mat-icon-button
-                class="text-red-400 hover:text-red-600"
-                (click)="onDeleteMeet(meet.id, $event)"
-              >
+              <button mat-icon-button class="text-slate-400 hover:text-red-400" (click)="onDeleteMeet(meet.id, $event)">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
-          </mat-card>
+          </div>
         </div>
 
-        <!-- Create Meet Button -->
-        <div class="mt-8">
-          <button
-            mat-raised-button
-            color="accent"
-            class="mt-4"
-            (click)="onCreateMeet()"
-          >
-            <mat-icon>event</mat-icon>
-            Create a New Meet
+        <div class="mt-6">
+          <button mat-raised-button color="accent" (click)="onCreateMeet()">
+            <mat-icon>add</mat-icon> Create a New Meet
           </button>
         </div>
       </div>

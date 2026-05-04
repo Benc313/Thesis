@@ -1,14 +1,39 @@
-<div class="container mx-auto p-4">
-  <h2 class="text-2xl font-bold text-neon-red mb-4">Upcoming Events for You</h2>
-  <div class="space-y-4">
-    <div *ngFor="let event of events" class="bg-gray-800 p-4 rounded-lg shadow-lg">
-      <h3 class="text-lg font-semibold">{{ event.name }}</h3>
-      <p>{{ event.date | date:'medium' }}</p>
-      <p>{{ event.isMeet ? 'Meet' : 'Race' }} - {{ event.private ? 'Private' : 'Public' }}</p>
+<div class="container">
+  <h2 class="page-header"><mat-icon>event</mat-icon> Upcoming Events</h2>
+
+  <div *ngIf="events.length === 0" class="text-center py-16">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800/50 border border-slate-700/50 mb-4">
+      <mat-icon class="text-slate-500" style="font-size: 32px; width: 32px; height: 32px;">calendar_today</mat-icon>
+    </div>
+    <p class="text-slate-400 text-lg">No upcoming events yet</p>
+    <p class="text-slate-500 text-sm mt-1">Join a meet or race to get started!</p>
+  </div>
+
+  <div class="grid gap-3">
+    <div
+      *ngFor="let event of events"
+      class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 flex items-center gap-4 hover:border-indigo-500/30 transition"
+    >
+      <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
+           [ngClass]="event.isMeet ? 'bg-purple-500/20' : 'bg-red-500/20'">
+        <mat-icon [ngClass]="event.isMeet ? 'text-purple-400' : 'text-red-400'"
+                  style="font-size: 20px; width: 20px; height: 20px;">
+          {{ event.isMeet ? 'event' : 'flag' }}
+        </mat-icon>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h3 class="text-white font-medium truncate">{{ event.name }}</h3>
+        <p class="text-slate-400 text-sm">{{ event.date | date:'mediumDate' }}</p>
+      </div>
+      <span class="flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full"
+            [ngClass]="event.private ? 'bg-slate-700 text-slate-300' : 'bg-indigo-500/20 text-indigo-300'">
+        {{ event.private ? 'Private' : 'Public' }}
+      </span>
     </div>
   </div>
-  <div class="mt-8">
-    <h2 class="text-xl font-bold text-neon-blue">Open for Suggestions</h2>
-    <p class="text-gray-400">Have an idea for a meet or race? Let us know!</p>
+
+  <div class="mt-8 bg-slate-800/30 border border-slate-700/30 rounded-xl p-6 text-center">
+    <p class="text-slate-300 font-medium">Have an idea for a meet or race?</p>
+    <p class="text-slate-500 text-sm mt-1">Head to Meets or Races to create one!</p>
   </div>
 </div>

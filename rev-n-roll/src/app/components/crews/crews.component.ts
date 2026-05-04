@@ -12,16 +12,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CrewService } from '../../services/crew.service';
 import { Crew, CrewRequest } from '../../models/crew';
-import { AddCrewDialogComponent } from '../add-crew-dialog/add-crew-dialog.component'; 
-import { CrewDetailsDialogComponent } from '../crew-details-dialog/crew-details-dialog.component'; // <--- NEW IMPORT
+import { AddCrewDialogComponent } from '../add-crew-dialog/add-crew-dialog.component';
+import { CrewDetailsDialogComponent } from '../crew-details-dialog/crew-details-dialog.component';
 import { AuthService } from '../../services/auth.service';
-
 
 @Component({
   selector: 'app-crews',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     NavBarComponent,
     MatCardModule,
     MatButtonModule,
@@ -67,7 +66,7 @@ export class CrewsComponent implements OnInit {
       }
     });
   }
-  
+
   viewCrewDetails(crewId: number): void {
     this.dialog.open(CrewDetailsDialogComponent, {
       width: '90%',
@@ -92,7 +91,6 @@ export class CrewsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: CrewRequest) => {
       if (result) {
-        // Optimistically set submitting flag for visual feedback
         const dialogInstance = dialogRef.componentInstance;
         dialogInstance.isSubmitting = true;
 
@@ -117,7 +115,7 @@ export class CrewsComponent implements OnInit {
       }
     });
   }
-  
+
   onEditCrew(crew: Crew): void {
     if (!this.isMember(crew)) {
       this.snackBar.open('You are not a member of this crew.', 'Close', { panelClass: ['error-snackbar'] });

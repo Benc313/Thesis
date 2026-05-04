@@ -1,10 +1,13 @@
 // profile.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { CarService } from '../../services/car.service';
+import { CrewService } from '../../services/crew.service';
 import { User } from '../../models/user';
 import { Car } from '../../models/car';
+import { Crew } from '../../models/crew';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +16,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { AddCarDialogComponent } from '../add-car-dialog-component/add-car-dialog-component.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; // Import MatSnackBarModule
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -27,7 +30,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; //
     MatIconModule,
     MatButtonToggleModule,
     AddCarDialogComponent,
-    MatSnackBarModule, // Add MatSnackBarModule
+    MatSnackBarModule,
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
@@ -35,6 +38,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'; //
 export class ProfileComponent implements OnInit {
   user: User | null = null;
   cars: Car[] = [];
+  crews: Crew[] = [];
   userId: number = parseInt(localStorage.getItem('id') || '0', 10);
   isLoading = false;
   errorMessage: string | null = null;
@@ -42,8 +46,10 @@ export class ProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private carService: CarService,
+    private crewService: CrewService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar // Inject MatSnackBar
+    private snackBar: MatSnackBar,
+    public router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +58,9 @@ export class ProfileComponent implements OnInit {
     });
     this.carService.getCars(this.userId).subscribe(cars => {
       this.cars = cars;
+    });
+    this.crewService.getUserCrews(this.userId).subscribe(crews => {
+      this.crews = crews;
     });
   }
 
@@ -191,5 +200,25 @@ export class ProfileComponent implements OnInit {
         });
       }
     });
+  }
+
+  getUserRank(crew: Crew): string {
+    const me = crew.users.find(u => u.id === this.userId.toString());
+    if (!me || me.rank === undefined) return 'Member';
+    const labels = ['Member', 'Moderator', 'Leader'];
+    return labels[me.rank] || 'Member';
+  }
+
+  getRankClass(crew: Crew): string {
+    const me = crew.users.find(u => u.id === this.userId.toString());
+    switch (me?.rank) {
+      case 2: return 'bg-amber-500/20 text-amber-300';
+      case 1: return 'bg-blue-500/20 text-blue-300';
+      default: return 'bg-slate-600/50 text-slate-300';
+    }
+  }
+
+  viewCrew(crewId: number): void {
+    this.router.navigate(['/crew', crewId]);
   }
 }

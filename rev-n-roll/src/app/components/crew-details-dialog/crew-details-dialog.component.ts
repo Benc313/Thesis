@@ -87,7 +87,7 @@ export class CrewDetailsDialogComponent implements OnInit {
   }
 
   loadCrewEvents(): void {
-    this.crewService.getCrewEvents(this.data.crewId).subscribe({
+    this.crewService.getEventsForCrew(this.data.crewId).subscribe({
         next: (events) => {
             this.events = events;
         },

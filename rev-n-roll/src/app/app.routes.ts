@@ -6,6 +6,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { MeetsComponent } from './components/meets/meets.component';
 import { RacesComponent } from './components/races/races.component';
 import { CrewsComponent } from './components/crews/crews.component';
+import { CrewDetailComponent } from './components/crew-detail/crew-detail.component';
 import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'meets', component: MeetsComponent, canActivate: [AuthGuard] },
   { path: 'races', component: RacesComponent, canActivate: [AuthGuard] },
   { path: 'crews', component: CrewsComponent, canActivate: [AuthGuard] },
+  { path: 'crew/:id', component: CrewDetailComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '**', redirectTo: '/login' }
 ];

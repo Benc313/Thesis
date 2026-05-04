@@ -8,7 +8,7 @@ public class CrewResponse
     public string Name { get; set; }
     public string Description { get; set; }
     public string ImageLocation { get; set; }
-    public List<UserResponse> Users { get; set; } = new();
+    public List<CrewMemberResponse> Users { get; set; } = new();
 
     
     public CrewResponse() { }
@@ -23,7 +23,7 @@ public class CrewResponse
         {
             Users = crew.UserCrews
                 .Where(uc => uc.User != null)
-                .Select(uc => new UserResponse(uc.User))
+                .Select(uc => new CrewMemberResponse(uc.User, uc.Rank))
                 .ToList();
         }
     }

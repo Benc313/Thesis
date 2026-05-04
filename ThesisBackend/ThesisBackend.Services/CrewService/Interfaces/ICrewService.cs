@@ -15,4 +15,5 @@ public interface ICrewService
     Task<CrewOperationResult> DeleteCrewAsync(int crewId);
     Task<EventsForCrewOperationResult> GetEventsForCrewAsync(int crewId);
     Task<CrewOperationResult> UpdateUserRankAsync(int crewId, int userId, Rank rank);
+    Task<AllCrewsOperationResult> GetUserCrewsAsync(int userId);
 }
