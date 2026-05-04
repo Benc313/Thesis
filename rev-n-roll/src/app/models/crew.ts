@@ -1,3 +1,9 @@
+export enum Rank {
+    Member = 0,
+    Moderator = 1,
+    Leader = 2,
+}
+
 export interface CrewMember {
     id: string;
     email: string;
@@ -19,4 +25,9 @@ export interface CrewRequest {
     name: string;
     description: string;
     imageLocation: string;
+}
+
+export interface UserCrewRequest {
+    userId: number;
+    rank: Rank;
 }

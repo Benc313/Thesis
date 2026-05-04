@@ -26,7 +26,7 @@
     <div
       *ngFor="let crew of crews"
       class="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 hover:border-indigo-500/30 transition cursor-pointer"
-      (click)="viewCrew(crew.id)"
+      (click)="viewCrewDetails(crew.id)"
     >
       <div class="flex items-start gap-4">
         <img
@@ -39,6 +39,7 @@
           <p class="text-slate-400 text-sm mt-0.5">{{ crew.users.length }} member{{ crew.users.length !== 1 ? 's' : '' }}</p>
           <p class="text-slate-500 text-sm mt-1 line-clamp-2">{{ crew.description || 'No description provided.' }}</p>
         </div>
+
         <div class="flex gap-1 flex-shrink-0">
           <button mat-icon-button class="text-slate-400 hover:text-indigo-400"
                   [disabled]="!isMember(crew)"
@@ -51,6 +52,11 @@
                   [matTooltip]="isMember(crew) ? 'Delete Crew' : 'Members only'"
                   (click)="onDeleteCrew(crew.id, $event)">
             <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button class="text-slate-400 hover:text-blue-400"
+                  matTooltip="View Crew Details"
+                  (click)="viewCrewDetails(crew.id); $event.stopPropagation()">
+            <mat-icon>visibility</mat-icon>
           </button>
         </div>
       </div>

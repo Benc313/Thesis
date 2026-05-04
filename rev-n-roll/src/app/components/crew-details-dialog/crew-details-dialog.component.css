@@ -1,0 +1,168 @@
+/* rev-n-roll/src/app/components/crew-details-dialog/crew-details-dialog.component.css */
+
+/* Using the same styles as MeetDetailsDialog for theme consistency */
+
+.dialog-container {
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9));
+    color: white;
+    height: 100vh;
+    width: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+    position: relative;
+    margin: 0 auto;
+    max-width: 90%;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #a78bfa;
+  }
+  
+  .close-button:hover {
+    color: #8b5cf6;
+  }
+  
+  .content-wrapper {
+    display: flex;
+    flex-direction: column; 
+    gap: 2rem;
+    height: calc(100% - 4rem);
+  }
+  
+  .left-section, .right-section {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 1rem;
+  }
+  
+  .left-section::-webkit-scrollbar,
+  .right-section::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .left-section::-webkit-scrollbar-track,
+  .right-section::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.8);
+    border-radius: 4px;
+  }
+  
+  .left-section::-webkit-scrollbar-thumb,
+  .right-section::-webkit-scrollbar-thumb {
+    background: #a78bfa;
+    border-radius: 4px;
+  }
+  
+  .left-section::-webkit-scrollbar-thumb:hover,
+  .right-section::-webkit-scrollbar-thumb:hover {
+    background: #8b5cf6;
+  }
+  
+  .meet-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #a78bfa;
+    margin-bottom: 1rem;
+  }
+  
+  .meet-details p {
+    margin: 0.5rem 0;
+  }
+  
+  .meet-details strong {
+    color: #d1d5db;
+  }
+  
+  .map-container {
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .join-section, .joined-message {
+    margin-top: 1rem;
+  }
+  
+  .join-section h3 {
+    font-size: 1.25rem;
+    color: #a78bfa;
+    margin-bottom: 1rem;
+  }
+  
+  .join-button {
+    background: #6366f1 !important;
+    color: white !important;
+    padding: 0.5rem 1.5rem !important;
+    border-radius: 0.25rem !important;
+  }
+  
+  .join-button:hover {
+    background: #4f46e5 !important;
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+  }
+  
+  .join-button:disabled {
+    background: #4b5563 !important;
+    box-shadow: none !important;
+  }
+  
+  .joined-message {
+    color: #34d399;
+    font-weight: bold;
+  }
+  
+  .right-section h3 {
+    font-size: 1.5rem;
+    color: #a78bfa;
+    margin-bottom: 1rem;
+  }
+  
+  .users-list, .events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .user-card {
+    background: rgba(31, 41, 55, 0.8);
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .user-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .no-users {
+    color: #9ca3af;
+    font-style: italic;
+  }
+  
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+/* Material Tab Overrides for Dark Theme */
+
+.mat-tab-group {
+    background: transparent !important;
+}
+
+.mat-tab-label {
+    color: #d1d5db !important;
+}
+
+.mat-ink-bar {
+    background-color: #a78bfa !important;
+}
+
+.mat-tab-body-wrapper {
+    padding-top: 1rem;
+}
